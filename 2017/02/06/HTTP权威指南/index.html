@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>《HTTP权威指南》笔记 | Ney的技术博客</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/4.2.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">《HTTP权威指南》笔记</h1><a id="logo" href="/.">Ney的技术博客</a><p class="description">Learning，sharing，improving</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">《HTTP权威指南》笔记</h1><div class="post-meta">Feb 6, 2017<span> | </span><span class="category"><a href="/categories/CS基础/">CS基础</a></span></div><div class="post-content"><h1 id="《HTTP权威指南》"><a href="#《HTTP权威指南》" class="headerlink" title="《HTTP权威指南》"></a>《HTTP权威指南》</h1><h3 id="第一部分-HTTP：Web的基础"><a href="#第一部分-HTTP：Web的基础" class="headerlink" title="第一部分 HTTP：Web的基础"></a>第一部分 HTTP：Web的基础</h3><h4 id="2-URL与资源"><a href="#2-URL与资源" class="headerlink" title="2 URL与资源"></a>2 URL与资源</h4><p>在Web和URL出现之前,人们要靠分类杂乱的应用程序来访问分布在网络中的数据。大多数人都不会幸运地拥有所有合适的应用程序,或者不能够理解,也没有足够的耐心来使用这些程序。</p>
+<p>在URL出现之前,要想和朋友共享complete-catalog.xls文件,就得说这样一些话:“用FTP连接到 ftp.joes-hardware.com上。用匿名登录,然后输入你的用户名作为密码。变换到pub目录。转换为二进制模式。现在,可以将名为complete-catalog.xls的文件下载到本地文件系统,并在那里浏览这个文件了。”</p>
+<p>现在,像网景的Navigator和微软的Internet Explorer这样的浏览器都将很多这样的功能捆绑成一个便捷包。通过URL,这些应用程序就可以通过一个接口,以统一的方式去访问许多资源了。只要说“将浏览器指向 ftp://ftp.lots-o-books.com/pub/complete-catalog.xls”就可以取代上面那些复杂的指令了。</p>
+<p>URL 为应用程序提供了一种访问资源的手段。实际上,很多用户可能都不知道他们的浏览器在获取所请求资源时所使用的协议和访问方法。</p>
+<p>有了Web浏览器,就不再需要用新闻阅读器来阅读因特网新闻,或者用FTP客户端来访问FTP服务器上的文件了,而且也无需用电子邮件程序来收发E-mail报文了。URL告知浏览器如何对资源进行访问和处理,这有助于简化复杂的网络世界。应用程序可以使用URL来简化信息的访问过程。</p>
+<p>URL为用户及他们的浏览器提供了找到信息所需的所有条件。URL定义了用户所需的特定资源,它位于何处以及如何获取它。</p>
+<h4 id="3-HTTP报文结构"><a href="#3-HTTP报文结构" class="headerlink" title="3 HTTP报文结构"></a>3 HTTP报文结构</h4><ul>
+<li>HTTP报文由起始行、首部和报文体(可选)组成</li>
+<li>HTTP的方法除了GET以外还有很多种，HEAD是代表让服务器只返回首部，一般用于查看资源的状态、尺寸、类型、是否存在等 。PUT是就是让服务器用请求的主体部分来创建一个由所请求的URL命名的新文档,或者,如果那个URL已经存在的话,就用这个主体来替代它。Trace是用于诊断，收到Trace请求的服务端会把收到的请求完整地回传给客户端。OPTIONS方法请求Web服务器告知其支持的各种功能。可以询问服务器通常支持哪些方法,或者对某些特殊资源支持哪些方法。服务端的响应中的Allow首部会列出所有支持的方法</li>
+<li>HTTP的方法是可以扩展的，只要服务端能正常理解和反馈就行</li>
+<li>常见状态码：1xx，信息状态码；2xx，成功状态码；3xx重定向状态码、注意当服务端有缓存内容的时候也会返回重定向状态码；4xx客户端错误码；5xx服务端错误码</li>
+<li>HTTP的首部就是key-val形式的信息、可以分为通用、请求、响应、实体状态描述等几个大类</li>
+</ul>
+<h4 id="4-HTTP链接管理"><a href="#4-HTTP链接管理" class="headerlink" title="4 HTTP链接管理"></a>4 HTTP链接管理</h4><ul>
+<li>TCP/IP是全球计算机及网络设备都在使用的一种常用的分组交换网络分层协议集。TCP会把数据拆解成多个分组然后封装成IP数据包发送</li>
+<li>一个IP数据包通常包含了一个IP分组首部(通常为20字节); 一个TCP段首部(通常为 20 字节); 一个TCP数据块(0 个或多个字节)。IP 首部包含了源和目的IP地址、长度和其他一些标记。TCP段的首部包含了TCP端口号、TCP 控制标记,以及用于数据排序和完整性检查的一些数字值</li>
+<li>HTTP的延迟主要由于以下几个原因造成：（1）DNS查询没有命中 （2）TCP握手 （3）HTTP报文传输 （4）回送HTTP响应</li>
+<li>TCP握手：（1）发送SYN=i （2）回送ACK=i+1，SYN=k （3）再发送ACK=k+1，以及载荷数据</li>
+<li>延迟确认：在接收方接收到数据后都要发送回执，这个回执会在一定的窗口期(100-200ms)内寻找发送到接收方的数据包来搭便车。所以如果在一段时间内都是单项数据传输的话，可能会因此产生延迟确认现象</li>
+<li>TCP慢启动：为了防止网络突然拥堵，TCP实现了慢启动机制。一个TCP连接会随着它成功发送的数据量的增大而提速</li>
+<li>TCP的TCP_NODELAY参数：在TCP连接中尽量要发送全尺寸数据（局域网中是1500字节，广域网中为几百字节），所以TCP会启用Nagle算法来尽量把数据赞起来直到达到一个全尺寸的数据包为止。这里就会因为攒数据而产生延迟</li>
+<li>当某个TCP端点关闭TCP连接时,会在内存中维护一个小的控制块,用来记录最近所关闭连接的IP地址和端口号。TIME_WAIT端口耗尽是很严重的性能问题,会影响到性能基准,但在现实中相对较少出现</li>
+<li>对HTTP对应的TCP进行优化的方案：</li>
+<li>并行连接：浏览器并发发起HTTP请求</li>
+<li>TCP持久连接：HTTP1.1中默认使用了持久连接。而在HTTP1.0中需要加上Connection: Keep-Alive 首部</li>
+<li>管道化连接：现在HTTP1.1中还可以在持久的TCP链接上发送多个请求</li>
+</ul>
+<h3 id="第二部分-HTTP结构"><a href="#第二部分-HTTP结构" class="headerlink" title="第二部分 HTTP结构"></a>第二部分 HTTP结构</h3><h4 id="5-Web服务器"><a href="#5-Web服务器" class="headerlink" title="5 Web服务器"></a>5 Web服务器</h4><ul>
+<li>高性能的Web服务器能够同时支持数千条连接。 因为请求可能会在任意时刻到达,所以Web服务器会不停地观察有无新的Web请求。不同的Web服务器结构会以不同的方式为请求服务。服务器一般分为一下几种：（1）单线程Web服务器（2）多进程及多线程Web服务器 （3）复用 I/O 的服务器（4）复用的多线程Web服务器</li>
+</ul>
+<h4 id="7-缓存"><a href="#7-缓存" class="headerlink" title="7 缓存"></a>7 缓存</h4><ul>
+<li>缓存命中、再验证命中。再验证命中需要向服务端请求数据，如果没有改变就是回传一个304、如果改变了就回传新内容并更新缓存、如果资源被删除就返回404并删除缓存</li>
+<li>缓存在现实中是分层次的，如果小的缓存没有命中会把请求发向父级缓存</li>
+<li>HTTP的资源附带有过期日期，它是通过Cache-Control首部和Expires 首部告知客户端。当缓存在过期日期之内可以无限次使用缓存，如果过期则会进行再验证。验证如果发现内容没有变化会获取新的首部（包含新的过期日期）</li>
+<li>条件方法进行再验证：If-Modified-Since:日期  和 If-None-Match:ETag首部</li>
+<li>ETag是为了解决经常被修改，但是文件本身内容却不会变化或者变化不大的情况。这时候通过Etag给资源一个标示符，然后通过标示符来检测文档是否变化</li>
+<li>响应首部Cache-Control的取值:no-store禁止存储副本、no-cache会存储副本，但是只有进行再验证后才会回送、must-revalidate、max-age</li>
+</ul>
+<h3 id="第三部分-识别、认证与安全"><a href="#第三部分-识别、认证与安全" class="headerlink" title="第三部分 识别、认证与安全"></a>第三部分 识别、认证与安全</h3><ul>
+<li>Cookies。服务端在相应首部使用Set-cookie可以让浏览器在本地设置Cookies</li>
+<li>HTTP提供了一个原生的质询 / 响应(challenge/response)框架,简化了对用户的认<br>证过程。 但是这个认证安全性太弱了，所以现在提出了摘要认证。不过这个摘要认证的安全性也比较弱</li>
+<li>数字签名。RSA的私钥和公钥可以互相加解密，RSA证明了签名的作者，而摘要算法保证了内容的真实性</li>
+<li>数字证书的真实性由数字签名保证，而数字证书的作用是清晰而真实地公开一个实体所持有的RSA公钥</li>
+<li>不要在自己的系统里面轻易的安装非CA签发的证书</li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a href="/2016/09/16/What's-New-in-iOS10/" class="next">What's New in iOS</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CS基础/">CS基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS开发/">iOS开发</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/06/HTTP权威指南/">《HTTP权威指南》笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/16/What's-New-in-iOS10/">What's New in iOS</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/13/cell-height-calc-with-autolayout/">项目中Cell自动计算行高的实践</a></li><li class="post-list-item"><a class="post-list-link" href="/2015/11/28/iOS-worst-practice/">iOS worst practice</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Ney的技术博客.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
