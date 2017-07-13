@@ -470,6 +470,101 @@
 ]]></content>
     </entry>
     
+    <entry>
+      <title><![CDATA[Autolayout笔记:自定义View]]></title>
+      <url>http://yoursite.com/2015/07/25/Autolayout-%E8%87%AA%E5%AE%9A%E4%B9%89View/</url>
+      <content type="html"><![CDATA[<h1 id="Autolayout笔记-自定义View"><a href="#Autolayout笔记-自定义View" class="headerlink" title="Autolayout笔记:自定义View"></a>Autolayout笔记:自定义View</h1><p>如果你想在自定义View里用Autolayout进行布局的话，有下面几个点需要注意：</p>
+<ul>
+<li>指定Intrinsic Content Size</li>
+<li>区分frame和alignment rect</li>
+<li>是否支持baseline-aligned布局</li>
+<li>对子视图进行精确的布局控制</li>
+</ul>
+<p>下面将从这些方面逐步讲解。</p>
+<h2 id="指定Intrinsic-Content-Size"><a href="#指定Intrinsic-Content-Size" class="headerlink" title="指定Intrinsic Content Size"></a>指定Intrinsic Content Size</h2><p>这部分的基本概念在上一篇文章已经讲过，这里不再赘述，主要注意三点：</p>
+<ol>
+<li>重写<code>intrinsicContentSize</code>方法。如果这个视图只有一个方向的尺寸设置了Intrinsic Size，那么为另一个方向的尺寸返回 <code>UIViewNoIntrinsicMetric</code>/<code>NSViewNoIntrinsicMetric</code>。</li>
+<li>当view的某些属性的改变会影响到Intrinsic Content Size时，需要调用<code>invalidateIntrinsicContentSize</code>，例如当UILabel的text变化时，就需要重新计算Intrinsic Content Size。</li>
+<li>当实现了<code>intrinsicContentSize</code>方法后，如果想进一步控制当View的实际大小和intrinsicContentSize`冲突时的行为，需要实现Compression Resistance和Content Hugging这方面的方法，具体做法请看<a href="http://blog.csdn.net/yongyinmg/article/details/39526207" title="yongyinmg的专栏" target="_blank" rel="external">这里</a></li>
+</ol>
+<h2 id="区分frame和alignment-rect"><a href="#区分frame和alignment-rect" class="headerlink" title="区分frame和alignment rect"></a>区分frame和alignment rect</h2><p>Autolayout系统的布局操作是基于alignment rect而非frame。绝大部分情况下它们是一样的，但是当你设置了<code>alignmentRectInsets</code>或者重写了<code>alignmentRectForFrame:</code>和<code>frameForAlignmentRect:</code>时就需要注意两者的差异。</p>
+<p><img src="/images/Autolayout-2/pic_1-1.png" alt="img"></p>
+<p>如图所示，Autolayout所有的约束（包括指定宽和高）都施加在alignment rect上，当你指定了<code>alignmentRectInsets</code>后View的frame是根据alignment rect和<code>alignmentRectInsets</code>计算出来的。上图里给view添加了left=80、top=100、width=100和height=100约束，使alignment rect上left为80、top为100、width为100、height为100，然后Autolayout系统根据alignmentRectInsets计算出view的frame，这里frame就是</p>
+<p>{<br><code>alignmentRect.left-alignmentRectInsets.left</code>,<br><code>alignmentRect.top-alignmentRectInsets.top</code>,<br><code>alignmentRect.width+alignmentRectInsets.left+alignmentRectInsets.right</code>,<br><code>alignmentRect.height+alignmentRectInsets.top+alignmentRectInsets.bottom</code><br>}</p>
+<p>即{<code>60</code>,<code>80</code>,<code>140</code>,<code>140</code>}</p>
+<h2 id="是否支持baseline-aligned布局"><a href="#是否支持baseline-aligned布局" class="headerlink" title="是否支持baseline-aligned布局"></a>是否支持baseline-aligned布局</h2><p>如果需要支持baseline布局，就需要实现<code>viewForBaselineLayout</code>(iOS平台) ，系统默认实现只是简单地返回<code>self</code>。如果重写这个方法它返回的View的底边会作为baseline，而且这个View必须是你自定义View的子视图。在OS X中实现baseline布局需要重写<code>baselineOffsetFromBottom</code>返回一个从视图底部边缘开始的offset，默认返回0。</p>
+<p>如果自定义View的frame和alignment rect不一样（设置了<code>alignmentRectInsets</code>或者重写了<code>alignmentRectForFrame:</code>和<code>frameForAlignmentRect:</code>）需要注意Autolayout布局是施加在alignment rect上的，自定义的view的最终位置是由<code>viewForBaselineLayout</code>和<code>alignmentRectInsets</code>共同决定的。</p>
+<h2 id="如何对子视图进行精确的布局控制"><a href="#如何对子视图进行精确的布局控制" class="headerlink" title="如何对子视图进行精确的布局控制"></a>如何对子视图进行精确的布局控制</h2><p><strong>给子视图添加Constraints</strong> 官方建议的方法是在 <code>updateConstraints</code>里添加子视图的Constraints，而且要保证 <code>[super updateConstraints]</code>一定要在你自己的Constraints添加完之后再调用。而且在这个方法里不能<em>“invalidate any constraints”</em>如果Constraints失效时，需要移除对应的Constraints，并调用<code>setNeedsUpdateConstraints</code>来刷新。</p>
+<p>如果是用添加Constraints的方式给子视图布局的话，这个自定义视图就仅仅在Autolayout环境下才能正常工作，因此可以重写<code>requiresConstraintBasedLayout</code>方法返回YES来告知系统必须使用Autolayout布局。</p>
+<p><strong>子视图布局</strong> 回顾一下之前说起过的Autolayout布局的3个步骤，当Update constraints阶段结束后，就进入Layout view阶段，此时就会调用<code>layoutSubviews</code>方法来根据Constraints计算出来的结果来调整view的<code>bounds</code>和<code>center</code>。因此在<code>layoutSubviews</code>方法里可以对布局进行任意的调整。</p>
+<p>最极端的情况是重写<code>layoutSubviews</code>/<code>layout</code>时不调用父类的实现。这就意味着系统虽然根据Constraints计算出视图树的位置，但你并没有应用计算的结果，换言之就是你在这个视图中完全放弃Autolayout布局，完全根据自己的意愿对子视图进行布局。</p>
+<p>如果你仍然想使用Autolayout布局子视图，你可以先调用<code>[super layoutSubviews]</code>/<code>[super layout]</code>，然后对布局进行微调。这样可以创建一些通过Constraints无法实现的布局，比如，由到视图大小之间的关系或是视图之间间距的关系来定义的布局。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a style="text-decoration:none;color:#1D39DD" href="http://www.objc.io/issues/3-views/advanced-auto-layout-toolbox/" target="_blank" rel="external"><br>《Advanced Auto Layout Toolbox》 - objc.io</a></li>
+<li><a style="text-decoration:none;color:#1D39DD" href="http://blog.csdn.net/yongyinmg/article/details/39526207" target="_blank" rel="external">《AutoLayout中的Content Hugging 和 Content Compression Resistance》 - yongyinmg的专栏</a></li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Autolayout笔记:基本概念]]></title>
+      <url>http://yoursite.com/2015/07/18/AutoLayout-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</url>
+      <content type="html"><![CDATA[<h1 id="Autolayout笔记-基本概念"><a href="#Autolayout笔记-基本概念" class="headerlink" title="Autolayout笔记:基本概念"></a>Autolayout笔记:基本概念</h1><p>AutoLayout使用非常简单，Xcode的支持也非常直观。但是因为和之前的方式有很大的不同，学习曲线比较陡峭，所以给新手造成一些心理负担，下面我将通过一些列的文章来给大家简单的讲解一下Autolayout的基本用法。</p>
+<p>AutoLayout是一个基于约束的布局系统。描述各种约束的行为，比如一个View 距离父View上边距多少，相邻之间的间隔多少，各个View之间的宽高关系等等。这一系列的条件就是为了最终确定之前提到的传统布局中需要的东西，这个View的大小、位置。所以，当我们设置的条件不足，或是条件冲突时，就会产生异常。</p>
+<h2 id="Constraints"><a href="#Constraints" class="headerlink" title="Constraints"></a>Constraints</h2><p>上面说了Autolayout是基于约束的，约束在iOS/OS X里面就是Constraint，让我们看看新建一个Constraint的API是怎样的：</p>
+<pre><code>NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:item1
+                                                                   attribute:NSLayoutAttributeLeft
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:item2
+                                                                   attribute:NSLayoutAttributeLeft
+                                                                  multiplier:1
+                                                                    constant:10];
+</code></pre><p>这里的参数比较多，但仔细看可以发现它表述了这样一种关系：<br><strong>Item. Attribute relatedBy toItem. Attribute * multiplier + constant</strong>。用人话解释一遍就是一个view的某个属性在位置上和另外一个view的某个属性有一定关系。举个例子比如说我想表达view1的右边和view2的左边相互紧挨着，那应该这么写<br><strong>View1.右边 = view2.左边 * 1 + 0</strong><br>这里的<code>=</code>表示的是位置相同的意思，另外除了等于以外还有<code>≤</code>和<code>≥</code>同样它们都是表示位置上关系。完成一个constraint后需要把它添加到constraint所关联的iteam的共同superView上。</p>
+<p><strong>需要注意的是constraints是累积的，它们之间是不能互相覆盖。</strong>如果你有一个constraints，你再添加一个同类型的constraints并不覆盖前一个。</p>
+<h2 id="Intrinsic-Content-Size"><a href="#Intrinsic-Content-Size" class="headerlink" title="Intrinsic Content Size"></a>Intrinsic Content Size</h2><p>苹果在使用Autolayout的原则里有一条是<strong>“视图是趋于自治的”</strong>，因此苹果鼓励用户在自定义view时自己实现Intrinsic Content Size，让view自己决定自己的大小。</p>
+<p>Intrinsic Content Size指的是view能显示内容的最佳尺寸。例如，UILabel的最佳高度取决于它的字体大小，它的最佳宽度取决于它的字体还有所显示的内容。一个UIProgressView的最佳高度取决于它的样式，而宽度则没有要求。一个空白的UIView则在宽度和高度上都没有要求。</p>
+<p>如果一个自定义的view的大小和其所显示的内容有关的话，就需要实现Intrinsic Content Size相关的方法。在实现Intrinsic Content Size的相关方法时你需要做两件事情：</p>
+<ol>
+<li>重写intrinsicContentSize方法，根据view显示的内容返回合适的intrinsic content size；</li>
+<li>在有些影响到Intrinsic Content Size的情况发生的时候调用<code>invalidateIntrinsicContentSize</code>例如当UILabel的文本内容变化的时候就需要调用上述的方法。如果view只有在某一个维度上有Intrinsic Content Size，那在另一个维度上返回<code>UIViewNoIntrinsicMetric</code>或者<code>NSViewNoIntrinsicMetric</code>就可以了。</li>
+</ol>
+<p><strong>需要注意的是intrinsic content size不能依赖view的frame。</strong>例如根据frame按比例返回intrinsic content size就是不可行的。</p>
+<h2 id="Sprint-amp-struts-VS-Autolayout"><a href="#Sprint-amp-struts-VS-Autolayout" class="headerlink" title="Sprint&amp;struts VS. Autolayout"></a>Sprint&amp;struts VS. Autolayout</h2><p>在Autolayout出现之前，我们使用<code>autoresizingMask</code>来描述当父视图的尺寸变化时子视图的动作。现在autolayout里使用Compression Resistance 和 Content Hugging来替代它们。不过为了兼容<code>autoresizingMask</code>，UIView在iOS6之后添加了一个新属性<code>translatesAutoResizingMaskIntoConstraints</code>(默认为YES)来自动把<code>autoresizingMask</code>转换成Constraints。</p>
+<p>在这里可能会有人问那在Autolayout环境下还能继续使用设置frame的方式进行布局吗。答案肯定是<strong>能</strong>，因为Autolayout系统仅仅是在frame布局的过程前面添加了一个计算约束的过程，最后计算好的结果还是通过frame来应用的。</p>
+<p><strong>这里可能会有人有过在Autolayout环境下设置frame不生效的经历</strong>，这里简单说下为什么。如果<code>requiresConstraintBasedLayout</code>被设置为<code>YES</code>则只能使用Autolayout进行布局，<br>否则就看<code>translatesAutoresizingMaskIntoConstraints</code>的设置，如果是YES则Autolayout和frame都可以进行布局，如果为NO则需要继续看是否存在<code>intrinsicContentSize</code>，如果存在则只能用Autolayout布局、不存在则Autolayout和frame都可以进行布局。</p>
+<p>你可以给view的每个维度(就是x方向和y方向)设置Compression Resistance、Content Hugging优先级。不过这个优先级仅仅对定义了intrinsic content size的view才会生效。</p>
+<p>在iOS上可以用<code>setContentHuggingPriority:forAxis:</code> 和 <code>setContentCompressionResistancePriority:forAxis:</code> 分别设置优先级(如果是NSVIew则是<code>setContentHuggingPriority:forOrientation:</code> 和 <code>setContentCompressionResistancePriority:forAxis:</code>)优先级的默认值是<code>NSLayoutPriorityDefaultHigh</code>或 <code>NSLayoutPriorityDefaultLow</code>.</p>
+<p>最后有一点需要注意，如果设定intrinsic content size和上述的优先级的话，系统把这些解释成一系列的constraint。例如一个label的intrinsic content size为{100,30}，x/y方向的compression resistance 优先级是750，Content Hugging优先级是250，这些条件会生成4个constraint：</p>
+<pre><code>H:[label(&lt;=100@250)]
+H:[label(&gt;=100@750)]
+V:[label(&lt;=30@250)]
+V:[label(&gt;=30@750)]
+</code></pre><h2 id="Frame-VS-Alignment-Rect"><a href="#Frame-VS-Alignment-Rect" class="headerlink" title="Frame VS. Alignment Rect"></a>Frame VS. Alignment Rect</h2><p>Autolayout在布局的时候不是操作view的frame而是alignment rect。这两者有一些非常容易让人忽略的细小差异，在大部分情况下他们功能都一样，但在某些场合alignment rect的功能可能更强大。</p>
+<p>大家可能都遇到过这样一种情况，一个button设置一个比较小的图片（或者图片周围有大面积的透明区）就会照成按钮看来很小，而且在布局的时候若以frame来做的话就会形成代码上是“对齐了”，但看起来就是“不整齐” 的情况，这是如果用alignment rect就会完美地解决这个问题。</p>
+<p>用alignment rect可以很灵活地自定义用于layout的区域，大部分情况下仅仅需要重写alignmentRectInsets方法就行了，它会让你返回一个相对于frame的Inset。如果上面的方法还不能满足需求则可以重写<code>alignmentRectForFrame:</code>和<code>frameForAlignmentRect:</code>这两个方法，这两个方法可以让你更加灵活的根据frame来返回对应的alignment rect，需要注意的是这两个方法有互逆关系，你必须要保证frame和alignment rect能通过这两个方法互相转换。</p>
+<p><img src="/images/Autolayout-1/pic_1-1.png" alt=""></p>
+<h2 id="Baseline-alignment"><a href="#Baseline-alignment" class="headerlink" title="Baseline alignment"></a>Baseline alignment</h2><p>如果对自定义的view用<code>NSLayoutAttributeBaseline</code>的方式布局的话需要自己实现相关的方法。在iOS平台需要实现<code>viewForBaselineLayout</code>方法，方法返回的view的bottom edge将被用作baseline，系统默认实现是直接返回view本身。注意返回的view只能是此方法调用者本身或者子view。在OS X上你需要实现baselineOffsetFromBottom来返回基于view的bottom edge的一个offset，默认返回0。</p>
+<h2 id="Phases-of-Display"><a href="#Phases-of-Display" class="headerlink" title="Phases of Display"></a>Phases of Display</h2><p>使用AutoLayout之后，把view显示到屏幕上面大体分成3步。</p>
+<p><img src="/images/Autolayout-1/pic_1-2.png" alt=""></p>
+<ol>
+<li>Update constraints，就是更新约束，把所有的约束更新到最新状态；</li>
+<li>Layout views，根据约束布局调整View之间的距离，大小；</li>
+<li>Display，调用drawRect绘制view。</li>
+</ol>
+<p>下面来讲一下具体的工作流程。</p>
+<p> <strong>Update constraints</strong> 这个过程是从底向上的(从<code>subview</code>到<code>supperview</code>)，你可以通过调用<code>setNeedsUpdateConstraints</code>来主动触发这个过程，你对constraint的任何更改都会导致系统自动调用这个方法。还可以重写<code>updateConstraints</code>方法来添加应用于自定义view内部的constraint。</p>
+<p><strong>Layout view</strong> 这个过程是自顶向下的(从<code>super</code> view到<code>subview</code>)，这一步实际上是应用上一步的约束的结果的过程，根据约束调整view的<code>frame</code>(在OS X)，或者view的<code>center</code>和<code>bounds</code>(在iOS)。你可以调用<code>setNeedsLayout</code>方法来主动触发这个过程。</p>
+<p><strong>Display</strong> 这个过程是也是自顶向下的，也可以调用<code>setNeedsDisplay</code>来主动触发这个过程，重写<code>drawRect:</code>来添加一些自定义的绘制代码这个相信大家都已经非常熟悉了。</p>
+<p><strong>需要注意的是这3个步骤并不是严格按照顺序依次发生的。</strong>基于约束的布局是一个迭代的过程。layout的改变可以影响到生成上一次layout的constraint，当其他的layout改变后它能再次触发更新约束的过程。不过这个也存在死循环的风险，就是在其他的layout改变时调用你自己实现的<code>layoutSubviews</code>方法。</p>
+<p><img src="/images/Autolayout-1/pic_1-3.png" alt=""></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a style="text-decoration:none;color:#1D39DD" href="http://www.objc.io/issues/3-views/advanced-auto-layout-toolbox/" target="_blank" rel="external"><br>《Advanced Auto Layout Toolbox》 - objc.io</a></li>
+<li><a style="text-decoration:none;color:#1D39DD" href="http://studentdeng.github.io/blog/2014/06/13/auto-layout/" target="_blank" rel="external">《AutoLayout 相关概念介绍和动画demo》 - 不会开机的男孩</a></li>
+<li><a style="text-decoration:none;color:#1D39DD" href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/Introduction/Introduction.html" target="_blank" rel="external">《Auto Layout Guide》 - Apple</a></li>
+</ul>
+]]></content>
+    </entry>
+    
   
   
 </search>
