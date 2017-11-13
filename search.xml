@@ -4,6 +4,41 @@
   
     
     <entry>
+      <title><![CDATA[给Xcode8安装插件]]></title>
+      <url>http://yoursite.com/2017/11/13/%E7%BB%99Xcode8%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6/</url>
+      <content type="html"><![CDATA[<h3 id="给Xcode8安装插件"><a href="#给Xcode8安装插件" class="headerlink" title="给Xcode8安装插件"></a>给Xcode8安装插件</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Xcode8以后安装以前<a href="http://alcatraz.io/" target="_blank" rel="external">Alcatraz</a>上的插件就行不通了，不过网上也有很多方案，主要是重新给Xcode签名。这里把这些文章做一个汇总。</p>
+<p>在Xcode8以后，苹果为了安全性(比如防止再次出现XcodeGhost事件)，把Xcode增加了签名校验，不会再加载以前Alcatraz下载的插件。并给出了自己的插件机制(<a href="https://developer.apple.com/videos/play/wwdc2016/414/" target="_blank" rel="external">Xcode Source Editor Extension</a>)，但是这个插件机制实用性很低。所以很多人就想着要继续使用以前的插件。</p>
+<p>现在的主流方案是是把Xcode复制一份，一个没有重签名，用来打包上线。另外一份重签名后，重新使用以前的插件，仅仅用来写代码。下面就来说说<strong>如何进行Xcode重签名</strong>、以及<strong>如何让以往的插件能在重签名的Xcode上跑起来</strong>。</p>
+<h4 id="Xcode重签名"><a href="#Xcode重签名" class="headerlink" title="Xcode重签名"></a>Xcode重签名</h4><ol>
+<li><p>创建自签名证书<br>打开钥匙串，创建新证书，名称填XcodeSigner，证书类型选择代码签名(名字里面尽量不要包含空格，免得在命令行容易出错)<br><img src="/Users/ney/Desktop/xcode8_resign_1.png" alt="xcode8_resign_1.png"><br><img src="/images/Xcod8plugin/xcode8_resign_1" alt=""></p>
+<p><img src="/images/Xcod8plugin/xcode8_resign_2" alt=""></p>
+</li>
+<li><p>复制Xcode。这里因为要留一份未重签名的Xcode来打包，所以这里先复制一份，并重命名为XcodeSigner</p>
+</li>
+<li><p>给Xcode重签名(这里的Xcode已经重命名为XcodeSigner)<br><code>sudo codesign -f -s XcodeSigner /Applications/XcodeSigner.app</code></p>
+</li>
+</ol>
+<p>经过上面这些步骤Xcode就已经被重签名了，什么？你说为什么三步，能一步到位吗，恩、问得好。还真有一步到位的解决方案。<br><a href="https://github.com/fpg1503/MakeXcodeGr8Again" target="_blank" rel="external">MakeXcodeGr8Again</a>把上面说的这三步合在了一起，并提供了CLI和GUI两种使用方式。一步到位！</p>
+<p>运行重新签名过后的Xcode很多人会发现以前的插件还是没有工作。这个问题在以前就有。原因是插件的<code>DVTPlugInCompatibilityUUIDs</code>包含了可运行的Xcode版本id，Xcode更新以后需要把新Xcode的id添加到插件的<code>DVTPlugInCompatibilityUUIDs</code>中。</p>
+<h4 id="把Xcode-id加入DVTPlugInCompatibilityUUIDs"><a href="#把Xcode-id加入DVTPlugInCompatibilityUUIDs" class="headerlink" title="把Xcode id加入DVTPlugInCompatibilityUUIDs"></a>把Xcode id加入DVTPlugInCompatibilityUUIDs</h4><ol>
+<li><p>获取Xcode的uuid<br>Xcode的Info.plist里就保存了自己的uuid。</p>
+<p>可以<code>右键点击Xcode</code>-&gt;<code>显示包内容</code>-&gt;<code>Contents/Info.plist</code>-&gt;<code>复制DVTPlugInCompatibilityUUID</code>来获取</p>
+<p>也可以通过<code>defaults read /Applications/Xcode.app/Contents/Info.plist DVTPlugInCompatibilityUUID</code>命令来获取</p>
+</li>
+<li><p>把uuid加入插件的DVTPlugInCompatibilityUUIDs<br>Xcode插件放在<code>~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins</code>为xcplugin格式。通过显示包内容可以看到xcplugin中有个<code>Info.plist</code>，DVTPlugInCompatibilityUUIDs字段就是。</p>
+</li>
+</ol>
+<p>把uuid更新到插件中需要两步，但是！插件有很多个，一个个来肯定要把人逼疯，这里当然有all in one的解决方案。</p>
+  <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">find</span> ~/<span class="type">Library</span>/<span class="type">Application</span>\ <span class="type">Support</span>/<span class="type">Developer</span>/<span class="type">Shared</span>/<span class="type">Xcode</span>/<span class="type">Plug</span>-ins -name <span class="type">Info</span>.plist -maxdepth <span class="number">3</span> | xargs -<span class="type">I</span>&#123;&#125; defaults write &#123;&#125; <span class="type">DVTPlugInCompatibilityUUIDs</span> -array-add `defaults read /<span class="type">Applications</span>/<span class="type">Xcode</span>.app/<span class="type">Contents</span>/<span class="type">Info</span>.plist <span class="type">DVTPlugInCompatibilityUUID</span>`</div></pre></td></tr></table></figure>
+<p>这个命令主要做了这些：<br>通过<code>find</code>在插件目录下找到所有插件的Info.plist文件。<br>通过<code>xargs</code>对上一步的搜索结果进行枚举，针对每一个Info.plist文件，利用<code>defaults write</code>命令将当前Xcode版本的uuid加到DVTPlugInCompatibilityUUIDs中。</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="http://www.jianshu.com/p/309da7b2119d" target="_blank" rel="external">如何在Xcode8上安装插件</a></li>
+<li><a href="http://joeshang.github.io/2015/04/10/fix-xcode-upgrade-plugin-invalid/" target="_blank" rel="external">Xcode升级后插件失效的原理与修复办法</a></li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[NSURLProtocol总结]]></title>
       <url>http://yoursite.com/2017/09/10/NSURLProtocol%E4%BB%8B%E7%BB%8D/</url>
       <content type="html"><![CDATA[<h2 id="NSURLProtocol总结"><a href="#NSURLProtocol总结" class="headerlink" title="NSURLProtocol总结"></a>NSURLProtocol总结</h2><p>NSURLProtocol可以说是苹果允许的一个中间人攻击组件，功能非常强大。但是关于NSURLProtocol的官方文档不多，不过业内已经有很多人踩坑，网上相关的文章比较多，这里把网上搜集到的相关文章做一个汇总</p>
