@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 使用Jenkins进行iOS项目自动化发布 · Ney的技术博客</title><meta name="description" content="使用Jenkins进行iOS项目自动化发布 - Ney"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/prontera.css"><link rel="search" type="application/opensearchdescription+xml" href="http://petpwiuta.github.io/atom.xml" title="Ney的技术博客"></head><body><header class="feature-header"><nav class="component-nav"><ul><div class="logo-container"><a href="/"><h2 class="title">Ney的技术博客</h2></a></div><a href="/" target="_self" class="li component-nav-item"><p>INDEX</p></a><a href="/archives" target="_self" class="li component-nav-item"><p>ARCHIVES</p></a><ul class="shortcut-icons"><a href="https://github.com/AngryPowman" target="_blank"><img src="/images/github.svg" class="icon"></a><a href="/atom.xml" target="_blank"><img src="/images/rss.svg" class="icon"></a></ul></ul></nav></header><main class="container"><div id="post-container"><div class="post"><article class="post-block"><h1 class="post-title">使用Jenkins进行iOS项目自动化发布</h1><div class="post-info">2019年1月14日</div><div class="post-content"><h3 id="使用Jenkins进行iOS项目自动化发布"><a href="#使用Jenkins进行iOS项目自动化发布" class="headerlink" title="使用Jenkins进行iOS项目自动化发布"></a>使用Jenkins进行iOS项目自动化发布</h3><p>前段时间把iOS发布逻辑迁移到fastlane平台，现在发布调一下fastlane脚本就好，对开发人员极度友好。不过后来发现虽然开发人员用得爽了，不过还是要被测试妹子催着打包，于是想釜底抽薪，把这个功能做得更彻底一点，直接让测试妹子自己来打包，这样就把iOS开发同学彻底解放了～</p>
+<p>公司内网已经部署了一台linux系统的jenkins服务器，上面集成了一些后端和前端的发布逻辑，所以直接添加一个iOS项目的发布流程就行。Xcode环境只能跑在Mac OS上，所以iOS项目的发布流程势必要做远程服务。</p>
+<p>在调研的时候打算在Mac OS上启一个http server，自己写相关的逻辑。后来发现jenkins有远程job互调用的功能，所以方案就变成在Mac OS上也部署一套jenkins，暴露出一些打包服务，然后在公司的jenkins中调用。因为有两套jenkins环境的配置（提供服务的和使用服务的），姑且称之为调用端和执行端。下面就来简单说一下这两部分的具体配置。</p>
+<h4 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h4><p><img src="/images/jenkins-ios/c-1.png" alt="c-1"></p>
+<h4 id="执行端"><a href="#执行端" class="headerlink" title="执行端"></a>执行端</h4><p>执行端主要就是提供一个http服务，用http协议来触发构建任务。下面是具体步骤：</p>
+<ol>
+<li>在jenkins中新建一个任务，这里选“自由风格的软件项目”</li>
+</ol>
+<p><img src="/images/jenkins-ios/a-0.png" alt="a-0"></p>
+<ol>
+<li>然后在General中勾选“参数化构建过程”，这里因为需要接收主调方发送的构建参数，所以要选这一项。因为要通知调用方执行结果，所以构建参数里增加“callbackurl”</li>
+</ol>
+<p><img src="/images/jenkins-ios/a-1.png" alt="a-1"></p>
+<ol>
+<li>接着在构建触发器中勾选“触发远程构建”，并填写身份证令牌。这里的身份证令牌和用户无关，仅仅只是这个job的api令牌，这里可以随便填一个，只要不太容易被猜到就行</li>
+</ol>
+<p><img src="/images/jenkins-ios/a-2.png" alt="a-2"></p>
+<ol>
+<li>最后在构建中增加“执行shell”选项。这里可以写执行任务的逻辑，我这儿就是简单的切换到工程目录，再调用fastlane打包，结束后回调完成的url</li>
+</ol>
+<p><img src="/images/jenkins-ios/a-3.png" alt="a-3"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> ~/projectPath          <span class="comment">#项目路径</span></div><div class="line">git checkout branch       <span class="comment">#切换到指定分支</span></div><div class="line">fastlane inhousepackage   <span class="comment">#调用fastlane完成打包</span></div><div class="line">curl  <span class="variable">$&#123;callbackurl&#125;</span>      <span class="comment">#调用回调url，通知调用方任务完成</span></div></pre></td></tr></table></figure>
+<ol>
+<li>到了这一步就完成了项目配置，不过因为用户认证相关的设置还没有完成，所以这个任务还不能被远程触发。点击右上角用户名可以进入到用户设置页面，点击设置，在“API Token”中添加一个token，使用这个token和用户名就能在其他机器上触发任务</li>
+</ol>
+<p><img src="/images/jenkins-ios/a-5.png" alt="a-5"></p>
+<ol>
+<li><p>完成上面这些设置后，会得到下列信息。主调方有了这些信息就能触发远程构建</p>
+<blockquote>
+<ul>
+<li><p>用户名(userName)</p>
+</li>
+<li><p>用户令牌(userToken)</p>
+</li>
+<li>任务令牌(jobToken)</li>
+<li>执行任务的机器ip地址，jenkins服务端口号码</li>
+<li>jenkins任务名字(jobName)</li>
+<li>回调url，这个非必须，不过不传的话无法知道任务是否已经结束(callbackurl)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment">#最后用上面这些信息拼接成类似下面这样的URL，通过http协议访问就能触发这台机器上的远程任务</span></div><div class="line">&gt; jobTriggerURL = <span class="string">"http://<span class="variable">$&#123;userName&#125;</span>:<span class="variable">$&#123;userToken&#125;</span>@<span class="variable">$&#123;jobServerIPAndPort&#125;</span>/job/<span class="variable">$&#123;jobName&#125;</span>/buildWithParameters?token=<span class="variable">$&#123;jobToken&#125;</span>&amp;callbackurl=<span class="variable">$&#123;callbackurl&#125;</span>"</span></div><div class="line">&gt; curl jobTriggerURL</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ol>
+<h4 id="调用端"><a href="#调用端" class="headerlink" title="调用端"></a>调用端</h4><p>当执行端设置好以后，调用端的设置就比较简单了。</p>
+<ol>
+<li>在jenkins中新建一个任务，这里选“流水线”，因为调用端的逻辑用到了一些pipeline插件，而且还有一些逻辑要处理，用流水线可以实现更精确控制</li>
+</ol>
+<p><img src="/images/jenkins-ios/b-1.png" alt="b-1"></p>
+<ol>
+<li>在“高级项目选项”中的“流水线”里写下下面的逻辑：</li>
+</ol>
+<p><img src="/images/jenkins-ios/b-2.png" alt="b-2"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">stage (<span class="string">"Wait remote iOS package job finish."</span>) &#123;</div><div class="line">    node &#123;</div><div class="line">        hook = registerWebhook()   <span class="comment">#这里使用了Webhook Step Plugin插件</span></div><div class="line"></div><div class="line">        </div><div class="line">        ip = sh (</div><div class="line">            script: <span class="string">"ifconfig en0 | sed -n 's/[\\s\\t]*inet \\([0-9\\.]*\\) .*/\\1/p' | tr -d '\\t\\n'"</span>,</div><div class="line">            <span class="built_in">return</span>Stdout: <span class="literal">true</span></div><div class="line">        )</div><div class="line"></div><div class="line">        </div><div class="line">        url = sh (</div><div class="line">            script: <span class="string">"echo \"<span class="variable">$&#123;hook.getURL()&#125;</span>\" | sed -n 's/localhost:[0-9]*/<span class="variable">$&#123;ip&#125;</span>:8080/p'"</span>,</div><div class="line">            <span class="built_in">return</span>Stdout: <span class="literal">true</span></div><div class="line">        )</div><div class="line">        </div><div class="line">        <span class="comment">#$&#123;hook.getURL()&#125;获取的回调url中host部分是localhost，所以需要用本机ip替换</span></div><div class="line"></div><div class="line"></div><div class="line">		<span class="comment">#这里的所有信息都是在执行实际任务的机器上获取的，具体细节看“执行端”部分</span></div><div class="line">        user =  <span class="string">"username"</span>  <span class="comment">#用户名字</span></div><div class="line">        userToken = <span class="string">""</span>      <span class="comment">#用户认证token</span></div><div class="line">        jobToken = <span class="string">"triggertoken123"</span>  <span class="comment">#任务token</span></div><div class="line">        jobServerIP = <span class="string">"172.20.24.122:8080"</span> </div><div class="line">        jobName = <span class="string">"iOS"</span></div><div class="line">        </div><div class="line">       </div><div class="line">        <span class="comment">#获取到上面的这些信息以后拼接成下面这个样式的url，发送get请求就能触发远程job</span></div><div class="line">        <span class="comment">#因为有些参数包含特殊字符，所以需要加上--data-urlencode来进行转义</span></div><div class="line">        jobTriggerURL = <span class="string">"http://<span class="variable">$&#123;user&#125;</span>:<span class="variable">$&#123;userToken&#125;</span>@<span class="variable">$&#123;jobServerIP&#125;</span>/job/<span class="variable">$&#123;jobName&#125;</span>/buildWithParameters"</span></div><div class="line">        <span class="built_in">echo</span> <span class="string">"job url:<span class="variable">$&#123;jobTriggerURL&#125;</span>"</span></div><div class="line">        sh(<span class="string">"curl --data-urlencode \"token=<span class="variable">$&#123;jobToken&#125;</span>\" --data-urlencode \"callbackurl=<span class="variable">$&#123;url&#125;</span>\" <span class="variable">$&#123;jobTriggerURL&#125;</span>"</span>)</div><div class="line">        </div><div class="line">   </div><div class="line">        <span class="built_in">echo</span> <span class="string">"Webhook called with data: <span class="variable">$&#123;url&#125;</span>"</span></div><div class="line">        data = <span class="built_in">wait</span>ForWebhook hook</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>脚本的主要逻辑是调用远程job，然后等待远程任务发送回调请求。这里用到了<a href="https://wiki.jenkins.io/display/JENKINS/Webhook+Step+Plugin" target="_blank" rel="external">Webhook Step Plugin</a>插件，它主要作用是获取一个回调URL，并挂起当前执行的脚本，直到回调url被调用以后再继续执行。</p>
+<p>经过上面的配置后就能在公司jenkins上进行iOS项目自动化发布了。如果jenkins是在外网，则会麻烦一些，需要连vpn或者在NAT上做一个端口映射才行。</p>
+</div></article></div><div id="disqus_thread"></div></div><script>var disqus_shortname = 'Ney';
+var disqus_identifier = '2019/01/14/使用Jenkins进行iOS项目自动化发布/';
+var disqus_title = '使用Jenkins进行iOS项目自动化发布';
+var disqus_url = 'http://petpwiuta.github.io/2019/01/14/使用Jenkins进行iOS项目自动化发布/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//Ney.disqus.com/count.js" async></script></main><footer class="footer-container"><div class="paginator"><a href="/2018/12/25/iOS Fastlane打包教程/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2019 <a href="http://petpwiuta.github.io">Ney</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/AngryPowman/hexo-theme-prontera" target="_blank">hexo-theme-prontera</a>.</p></div></footer></body></html>
