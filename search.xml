@@ -4,6 +4,81 @@
   
     
     <entry>
+      <title><![CDATA[UIStackView]]></title>
+      <url>http://petpwiuta.github.io/2019/03/30/UIStackView/</url>
+      <content type="html"><![CDATA[<h1 id="UIStackView"><a href="#UIStackView" class="headerlink" title="UIStackView"></a>UIStackView</h1><p>UIStackview是一个流式布局的工具。贼好用😝😝</p>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>UIStackView可以说是Auto Layout最强有力的助手，通过它能大幅简化多个view规律性的布局逻辑。stack view所管理的view都在它的 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616232-arrangedsubviews" target="_blank" rel="external"><code>arrangedSubviews</code></a> 属性里。stack view会把这些view根据其在数组中的先后顺序沿着横向/纵向（取决于<a href="https://developer.apple.com/documentation/uikit/uistackview/1616223-axis" target="_blank" rel="external"><code>axis</code></a>属性）排列，然当具体的排列效果还和 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616233-distribution" target="_blank" rel="external"><code>distribution</code></a>, <a href="https://developer.apple.com/documentation/uikit/uistackview/1616243-alignment" target="_blank" rel="external"><code>alignment</code></a>, <a href="https://developer.apple.com/documentation/uikit/uistackview/1616225-spacing" target="_blank" rel="external"><code>spacing</code></a>, 等属性有关。</p>
+<p><img src="/images/stackview.png" style="zoom:40%"></p>
+<p>在Storyboard中使用stack view很简单，打开控件库，选择Horizontal Stack View 或 Vertical Stack View拖到view上，再拖一些其他控件到stack view里面就行了。如果约束足够明确的话Interface Builder会根据你的内容自动调整stack view的大小。另外还有一个快速使用stack view的小技巧，就是选中一组控件以后点击Interface Builder右下角的 <strong>Embed In</strong> <img src="/images/embedin.png" style="zoom:20%"> 按钮选择stack view就能快速用stack view把选中的控件wrap起来。</p>
+<h3 id="Stack-View-和-Auto-Layout"><a href="#Stack-View-和-Auto-Layout" class="headerlink" title="Stack View 和 Auto Layout"></a>Stack View 和 Auto Layout</h3><p>stack view通过自动布局来确定所管理的view的大小和位置。<code>axis</code>决定了stack view是水平排列还是垂直排列。如果设置 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616220-islayoutmarginsrelativearrangeme" target="_blank" rel="external"><code>isLayoutMarginsRelativeArrangement</code></a> 属性为 <code>true</code> ，stack view会基于margin来决定view之间位置（不设置的话就是基于视图的边缘来计算）。</p>
+<p><code>distribution</code>属性用来设置沿着axis方向的各个view的排列方式。当axis是<code>UILayoutConstraintAxisHorizontal</code>就是设置水平方向各个view的排列关系，当axis是<code>UILayoutConstraintAxisVertical</code>就是设置垂直方向各个view的排列关系。</p>
+<p>stack view对子view进行排列时，会依次调用view的<a href="https://developer.apple.com/documentation/uikit/uiview/1622600-intrinsiccontentsize" target="_blank" rel="external"><code>intrinsicContentSize</code></a>属性来确定其大小。有一个例外，就是distribution设置成<a href="https://developer.apple.com/documentation/uikit/uistackview/distribution/fillequally" target="_blank" rel="external"><code>UIStackView.Distribution.fillEqually</code></a>时，此时stack view会尽量把所有的view拉伸成同样的长度，均匀地填充整个容器。stack view在拉伸时会尝试把其他的view拉得和最长的那个一样长。</p>
+<p><code>alignment</code>属性用来设置垂直于axis方向的各个view的对齐方式。当axis是<code>UILayoutConstraintAxisHorizontal</code>就是设置垂直方向各个view的对齐关系，当axis是<code>UILayoutConstraintAxisVertical</code>就是设置水平方向各个view的对齐关系。</p>
+<p>stack view对子view进行对齐时，也会依次调用view的<a href="https://developer.apple.com/documentation/uikit/uiview/1622600-intrinsiccontentsize" target="_blank" rel="external"><code>intrinsicContentSize</code></a>属性来确定其大小。当然也有一个例外，就是alignment设置为<a href="https://developer.apple.com/documentation/uikit/uistackview/alignment/fill" target="_blank" rel="external"><code>UIStackView.Alignment.fill</code></a> 时，此时stack view会尽量把所有的view拉伸成同样的高度，均匀地填充整个容器。stack view在拉伸时会尝试把其他的view拉得和最高的那个一样高。</p>
+<h3 id="Stack-View的位置和大小"><a href="#Stack-View的位置和大小" class="headerlink" title="Stack View的位置和大小"></a>Stack View的位置和大小</h3><p>stack view可以根据所管理的view推导出自己的大小，但是它无法确定自己的位置。所需要明确地写出位置约束。只要指定两个的相邻边的位置stack view就能确定其自身的位置。与此同时stack view也会根据内容来自动调整自己的宽度和高度：</p>
+<ul>
+<li>沿着axis方向的宽度等于其管理的所有view的尺寸加上view之间的间距</li>
+<li>垂直于axis方向的高度等于所管理的view中最高的那个</li>
+<li>如果stack view的 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616220-islayoutmarginsrelativearrangeme" target="_blank" rel="external"><code>isLayoutMarginsRelativeArrangement</code></a> 属性设置为 <code>true</code>, stack view的尺寸会包含margins的大小</li>
+</ul>
+<p>当然，上面的这些都是默认的行为，如果不能满足要求还能直接给stack view加高度或宽度的约束。stack view会根据 <a href="https://developer.apple.com/documentation/uikit/uistackview/distribution" target="_blank" rel="external"><code>UIStackView.Distribution</code></a> 和 <a href="https://developer.apple.com/documentation/uikit/uistackview/alignment" target="_blank" rel="external"><code>UIStackView.Alignment</code></a> 等设置来调整子view的排列和对齐来满足约束条件。 </p>
+<p>虽然stack view仅仅只是一个布局容器，但是它也支持基于first/last baseline的布局：</p>
+<ul>
+<li>horizontal方向的stack view <a href="https://developer.apple.com/documentation/uikit/uiview/1622452-forfirstbaselinelayout" target="_blank" rel="external"><code>forFirstBaselineLayout</code></a>和 <a href="https://developer.apple.com/documentation/uikit/uiview/1622633-forlastbaselinelayout" target="_blank" rel="external"><code>forLastBaselineLayout</code></a> 会返回所管理的view中最高的那个对应的属性。 如果最高的那个也是stack view的话会进行递归调用，直到返回正常结果</li>
+<li>vertical方向的stack view <code>forFirstBaselineLayout</code>会返回所管理的第一个子view，<code>forLastBaselineLayout</code>会返回最后一个。同样的如果第一个/最后一个还是stack view的话也会递归式调用</li>
+</ul>
+<blockquote>
+<p>注意</p>
+<p>Baseline alignment 仅仅只能在view的frame高度等于自己的intrinsic.height时才能正常工作，换句话说就是view如果被压缩或拉伸的话baseline alignment可能就会有bug</p>
+</blockquote>
+<h3 id="Stack-View的常用属性"><a href="#Stack-View的常用属性" class="headerlink" title="Stack View的常用属性"></a>Stack View的常用属性</h3><p>stack view虽然是view的子类，它只负责管理其排列视图的位置和大小，本身不会被渲染出来。所以一些外观相关的属性（如<a href="https://developer.apple.com/documentation/uikit/uiview/1622591-backgroundcolor" target="_blank" rel="external"><code>backgroundColor</code></a>）对它没有效果，也不能重载 <a href="https://developer.apple.com/documentation/uikit/uiview/1622626-layerclass" target="_blank" rel="external"><code>layerClass</code></a>, <a href="https://developer.apple.com/documentation/uikit/uiview/1622529-draw" target="_blank" rel="external"><code>draw(_:)</code></a>等方法。</p>
+<ul>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616223-axis" target="_blank" rel="external"><code>axis</code></a> 确定了stack的方向，选项是vertically/horizontally.</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616233-distribution" target="_blank" rel="external"><code>distribution</code></a> 用来设置沿着axis方向的各个view的排列方式</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616243-alignment" target="_blank" rel="external"><code>alignment</code></a> 用来设置垂直与axis方向的各个view的对齐方式</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616225-spacing" target="_blank" rel="external"><code>spacing</code></a> view之间的最小间距</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616224-isbaselinerelativearrangement" target="_blank" rel="external"><code>isBaselineRelativeArrangement</code></a> 当axis设置为垂直方向时才有用。垂直方向的view是否用基于baseline排列，这个属性在排列一些文本控件时很管用</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616220-islayoutmarginsrelativearrangeme" target="_blank" rel="external"><code>isLayoutMarginsRelativeArrangement</code></a> 是否基于margin进行排列</li>
+</ul>
+<h3 id="Stack-View的Arranged-Views和Subviews"><a href="#Stack-View的Arranged-Views和Subviews" class="headerlink" title="Stack View的Arranged Views和Subviews"></a>Stack View的Arranged Views和Subviews</h3><p>stack view保证 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616232-arrangedsubviews" target="_blank" rel="external"><code>arrangedSubviews</code></a> 属性一直是其 <a href="https://developer.apple.com/documentation/uikit/uiview/1622614-subviews" target="_blank" rel="external"><code>subviews</code></a> 的子集. 具体规则如下:</p>
+<ul>
+<li><p>当stack view添加view到<code>arrangedSubviews</code> 时, 它也会把view添加到自己的subviews数组里面（如果已经添加过就不重复添加）</p>
+</li>
+<li><p>当一个view从stack view的subview中移除时，它也会从 <code>arrangedSubviews</code> 中移除</p>
+</li>
+<li><p>当一个view从stack view的 <code>arrangedSubviews</code> 中移除时，这个view<font color="red"> <strong>并不会</strong></font>从stack view的<code>arrangedSubviews</code>中移除</p>
+</li>
+</ul>
+<p>  虽然<code>arrangedSubviews</code>属性一直是其<code>subviews</code>的子集，但这两个数组内的元素顺序并不一定是一致的。</p>
+<ul>
+<li><code>arrangedSubviews</code>中的顺序决定了view在容器中出现的顺序。在水平方向的stack view中，view是沿着阅读方向（绝大部分语言是从左到右，阿拉伯语是从右到左。不过这个不取决于系统语言设置，取决于布局是用left/right还是leading/trailing）排列的。index小的在前，index大的在后</li>
+<li>而<code>subviews</code> 中的顺序决定子view的Z-order。Z-order高的会把低的view盖住</li>
+</ul>
+<h3 id="Stack-View-动态内容"><a href="#Stack-View-动态内容" class="headerlink" title="Stack View 动态内容"></a>Stack View 动态内容</h3><p>当对stack view<a href="https://developer.apple.com/documentation/uikit/uistackview/1616232-arrangedsubviews" target="_blank" rel="external"><code>arrangedSubviews</code></a> 进行添加/插入/删除，以及对它所管理的子view的属性进行修改时，stack view的内容会自动更新。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Appears to remove the first arranged view from the stack.</span></div><div class="line"><span class="comment">// The view is still inside the stack, it's just no longer visible, and no longer contributes to the layout.</span></div><div class="line"><span class="keyword">let</span> firstView = stackView.arrangedSubviews[<span class="number">0</span>]</div><div class="line">firstView.isHidden = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>同样的，如果修改stack view的属性，它的内容也会根据属性的变化而动态地调整。比如设置<a href="https://developer.apple.com/documentation/uikit/uistackview/1616223-axis" target="_blank" rel="external"><code>axis</code></a>动态地改变stack view的方向。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Toggle between a vertical and horizontal stack</span></div><div class="line"><span class="keyword">if</span> stackView.axis == .<span class="type">Horizontal</span> &#123;</div><div class="line">    stackView.axis = .<span class="type">Vertical</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span> &#123;</div><div class="line">    stackView.axis = .<span class="type">Horizontal</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>也可以在动画block里面调整子view的属性。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Animates removing the first item in the stack.</span></div><div class="line"><span class="type">UIView</span>.animateWithDuration(<span class="number">0.25</span>) &#123; () -&gt; <span class="type">Void</span> <span class="keyword">in</span></div><div class="line">    <span class="keyword">let</span> firstView = stackView.arrangedSubviews[<span class="number">0</span>]</div><div class="line">    firstView.isHidden = <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[pod install 特别慢的终极解决方案😋]]></title>
+      <url>http://petpwiuta.github.io/2019/03/27/pod%20install%20%E7%89%B9%E5%88%AB%E6%85%A2%E7%9A%84%E7%BB%88%E6%9E%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</url>
+      <content type="html"><![CDATA[<h2 id="pod-install-特别慢的终极解决方案😋"><a href="#pod-install-特别慢的终极解决方案😋" class="headerlink" title="pod install 特别慢的终极解决方案😋"></a>pod install 特别慢的终极解决方案😋</h2><p><strong>pod install 在终端更新慢</strong> 其实真正慢的并不在 <strong>pod</strong> 命令，而是在于 <strong>github</strong>访问速度慢，那么真正的解决方案就是要加快 <strong>git</strong>命令的速度。当然，加速<strong>git</strong>的方法就是开代理。</p>
+<p>我使用的 <strong>shadowsocks代理</strong>，默认代理端口为<strong>1080</strong>，打开小飞机，配置好代理之后，去终端输入<strong>git</strong>配置命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global http.https://github.com.proxy socks5://127.0.0.1:1080</div></pre></td></tr></table></figure>
+<p>如此就从根本上解决了问题。<strong>代理前 10k/s ☹️ 代理后 600k/s</strong> 😍</p>
+<p>如果要恢复/移除上面设置的 <strong>git</strong>代理，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset http.https://github.com.proxy</div></pre></td></tr></table></figure>
+<h5 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h5><ul>
+<li><a href="https://blog.csdn.net/wuquan0625/article/details/47401235" target="_blank" rel="external">https://blog.csdn.net/wuquan0625/article/details/47401235</a></li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[使用Jenkins进行iOS项目自动化发布]]></title>
       <url>http://petpwiuta.github.io/2019/01/14/%E4%BD%BF%E7%94%A8Jenkins%E8%BF%9B%E8%A1%8CiOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%8A%A8%E5%8C%96%E5%8F%91%E5%B8%83/</url>
       <content type="html"><![CDATA[<h3 id="使用Jenkins进行iOS项目自动化发布"><a href="#使用Jenkins进行iOS项目自动化发布" class="headerlink" title="使用Jenkins进行iOS项目自动化发布"></a>使用Jenkins进行iOS项目自动化发布</h3><p>前段时间把iOS发布逻辑迁移到fastlane平台，现在发布调一下fastlane脚本就好，对开发人员极度友好。不过后来发现虽然开发人员用得爽了，不过还是要被测试妹子催着打包，于是想釜底抽薪，把这个功能做得更彻底一点，直接让测试妹子自己来打包，这样就把iOS开发同学彻底解放了～</p>
@@ -156,6 +231,27 @@
     </entry>
     
     <entry>
+      <title><![CDATA[Xcode Signing 机制]]></title>
+      <url>http://petpwiuta.github.io/2018/12/06/Xcode%E7%AD%BE%E5%90%8D%E6%9C%BA%E5%88%B6/</url>
+      <content type="html"><![CDATA[<h3 id="Xcode-Signing-机制"><a href="#Xcode-Signing-机制" class="headerlink" title="Xcode Signing 机制"></a>Xcode Signing 机制</h3><h4 id="历史遗留问题"><a href="#历史遗留问题" class="headerlink" title="历史遗留问题"></a>历史遗留问题</h4><p>做iOS开发经验稍长的同学都知道Xcode8以前的证书管理机制做的比较简单。就是一旦发现你的机器没有provisionProfile所关联的证书，就会在界面上显示红色按钮，你点击“Fix it”，然后Xcode就revoke provisionProfile所关联的证书，然后在帮你申请一个新的。</p>
+<p>这个单人单机的情况下没有什么问题，不过你如果有2台以上的mac就会发现“Fix it”这个按钮不能随便点。多台mac一般都是把私钥copy到每一台电脑上，如果在哪台电脑上点了“Fix it”，这时辛辛苦苦复制好的私钥就会revoke，瞬间所有mac都不能正常干活了。如果是一个人有多台电脑还好点，这个问题在团队里面更严重，多人有多人电脑时，很可能会有人误点到“Fix it”按钮，而造成整个团队罢工的情况。所以一般小组成员都会互相告诫不能随便点“Fix it”按钮，甚至有人还写了插件来禁用这个按钮。</p>
+<p>这种痛苦的情况在Xcode8上得到了彻底解决。</p>
+<h4 id="Xcode8引入的新的开发证书的更新机制"><a href="#Xcode8引入的新的开发证书的更新机制" class="headerlink" title="Xcode8引入的新的开发证书的更新机制"></a>Xcode8引入的新的开发证书的更新机制</h4><p>Xcode8引入的最大改变就是provisionProfile中关联的证书变成了多个，一个develop版本的provisionProfile中可以关联所有开发人员自己的证书。只要在机器上有列表中的任何一个证书就能进行代码签名，这样在新成员来时仅仅更新它自己的证书以及provisionProfile就行，并不会影响其他人，这个步骤在Xcode8中非常简单，只需要一个点击就能搞定</p>
+<p>Xcode的这些操作都是在后台进行的，不过你如果想要了解估计的细节可以在左侧的“Show the Report navigator(最后一个选项)”选项卡中看到<br><img src="/images/xcode-sign.png" alt=""></p>
+<h4 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h4><ul>
+<li><p>Automatically manage signning<br>在这种模式下每个开发人员都会有自己的develop证书，这时尽量用自己develop证书来archive，而不要用公共的开发证书，避免了别人不小心把公用证书revoke导致的一系列问题</p>
+</li>
+<li><p>manully manage signning<br>手动管理证书的时候主要不要选和自己帐号相关联的证书，因为自己的帐号只有自己有，到团队其他成员的机器上就不能工作了。这时候就选develope这样的默认值就行了</p>
+</li>
+</ul>
+<h4 id="相关引用"><a href="#相关引用" class="headerlink" title="相关引用"></a>相关引用</h4><ul>
+<li><a href="https://developer.apple.com/videos/play/wwdc2017/403/" target="_blank" rel="external">What’s New in Signing for Xcode and Xcode Server - WWDC2017</a></li>
+<li><a href="https://developer.apple.com/videos/play/wwdc2016/401" target="_blank" rel="external">What’s New in Xcode App Signing - WWDC2016</a></li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Match工具介绍]]></title>
       <url>http://petpwiuta.github.io/2018/12/06/Match%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/</url>
       <content type="html"><![CDATA[<h3 id="Match工具介绍"><a href="#Match工具介绍" class="headerlink" title="Match工具介绍"></a>Match工具介绍</h3><p>Match是Fastlane工具集中非常重要的一个，它负责iOS应用生命周期中的各种证书和profile的创建和维护。想想各位被各种证书和profile问题所支配的恐惧就知道它的厉害之处。</p>
@@ -178,27 +274,6 @@
 </li>
 <li><p><a href="https://docs.fastlane.tools/actions/match/" target="_blank" rel="external">match doc</a></p>
 </li>
-</ul>
-]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[Xcode Signing 机制]]></title>
-      <url>http://petpwiuta.github.io/2018/12/06/Xcode%E7%AD%BE%E5%90%8D%E6%9C%BA%E5%88%B6/</url>
-      <content type="html"><![CDATA[<h3 id="Xcode-Signing-机制"><a href="#Xcode-Signing-机制" class="headerlink" title="Xcode Signing 机制"></a>Xcode Signing 机制</h3><h4 id="历史遗留问题"><a href="#历史遗留问题" class="headerlink" title="历史遗留问题"></a>历史遗留问题</h4><p>做iOS开发经验稍长的同学都知道Xcode8以前的证书管理机制做的比较简单。就是一旦发现你的机器没有provisionProfile所关联的证书，就会在界面上显示红色按钮，你点击“Fix it”，然后Xcode就revoke provisionProfile所关联的证书，然后在帮你申请一个新的。</p>
-<p>这个单人单机的情况下没有什么问题，不过你如果有2台以上的mac就会发现“Fix it”这个按钮不能随便点。多台mac一般都是把私钥copy到每一台电脑上，如果在哪台电脑上点了“Fix it”，这时辛辛苦苦复制好的私钥就会revoke，瞬间所有mac都不能正常干活了。如果是一个人有多台电脑还好点，这个问题在团队里面更严重，多人有多人电脑时，很可能会有人误点到“Fix it”按钮，而造成整个团队罢工的情况。所以一般小组成员都会互相告诫不能随便点“Fix it”按钮，甚至有人还写了插件来禁用这个按钮。</p>
-<p>这种痛苦的情况在Xcode8上得到了彻底解决。</p>
-<h4 id="Xcode8引入的新的开发证书的更新机制"><a href="#Xcode8引入的新的开发证书的更新机制" class="headerlink" title="Xcode8引入的新的开发证书的更新机制"></a>Xcode8引入的新的开发证书的更新机制</h4><p>Xcode8引入的最大改变就是provisionProfile中关联的证书变成了多个，一个develop版本的provisionProfile中可以关联所有开发人员自己的证书。只要在机器上有列表中的任何一个证书就能进行代码签名，这样在新成员来时仅仅更新它自己的证书以及provisionProfile就行，并不会影响其他人，这个步骤在Xcode8中非常简单，只需要一个点击就能搞定</p>
-<p>Xcode的这些操作都是在后台进行的，不过你如果想要了解估计的细节可以在左侧的“Show the Report navigator(最后一个选项)”选项卡中看到<br><img src="/images/xcode-sign.png" alt=""></p>
-<h4 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h4><ul>
-<li><p>Automatically manage signning<br>在这种模式下每个开发人员都会有自己的develop证书，这时尽量用自己develop证书来archive，而不要用公共的开发证书，避免了别人不小心把公用证书revoke导致的一系列问题</p>
-</li>
-<li><p>manully manage signning<br>手动管理证书的时候主要不要选和自己帐号相关联的证书，因为自己的帐号只有自己有，到团队其他成员的机器上就不能工作了。这时候就选develope这样的默认值就行了</p>
-</li>
-</ul>
-<h4 id="相关引用"><a href="#相关引用" class="headerlink" title="相关引用"></a>相关引用</h4><ul>
-<li><a href="https://developer.apple.com/videos/play/wwdc2017/403/" target="_blank" rel="external">What’s New in Signing for Xcode and Xcode Server - WWDC2017</a></li>
-<li><a href="https://developer.apple.com/videos/play/wwdc2016/401" target="_blank" rel="external">What’s New in Xcode App Signing - WWDC2016</a></li>
 </ul>
 ]]></content>
     </entry>
