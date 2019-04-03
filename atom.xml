@@ -41,9 +41,9 @@
     <link href="http://petpwiuta.github.io/2019/03/27/pod%20install%20%E7%89%B9%E5%88%AB%E6%85%A2%E7%9A%84%E7%BB%88%E6%9E%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
     <id>http://petpwiuta.github.io/2019/03/27/pod install 特别慢的终极解决方案/</id>
     <published>2019-03-27T12:31:04.370Z</published>
-    <updated>2019-04-03T02:50:44.476Z</updated>
+    <updated>2019-04-03T02:59:43.229Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="pod-install-特别慢的终极解决方案😋"><a href="#pod-install-特别慢的终极解决方案😋" class="headerlink" title="pod install 特别慢的终极解决方案😋"></a>pod install 特别慢的终极解决方案😋</h2><p><strong>pod install 在终端更新慢</strong> 其实真正慢的并不在 <strong>pod</strong> 命令，而是在于 <strong>github</strong>访问速度慢，那么真正的解决方案就是要加快 <strong>git</strong>命令的速度。当然，加速<strong>git</strong>的方法就是开代理。</p><p>我使用的 <strong>shadowsocks代理</strong>，默认代理端口为<strong>1080</strong>，打开小飞机，配置好代理之后，去终端输入<strong>git</strong>配置命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global http.https://github.com.proxy socks5://127.0.0.1:1086</div><div class="line">#socks5://127.0.0.1:1086 1086端口号是shadowsocks的默认设置，实际以自己的机器为准</div></pre></td></tr></table></figure><p>如此就从根本上解决了问题。<strong>代理前 10k/s ☹️ 代理后 600k/s</strong> 😍</p><p>如果要恢复/移除上面设置的 <strong>git</strong>代理，使用如下命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset http.https://github.com.proxy</div></pre></td></tr></table></figure><h5 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h5><ul><li><a href="https://blog.csdn.net/wuquan0625/article/details/47401235" target="_blank" rel="external">https://blog.csdn.net/wuquan0625/article/details/47401235</a></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="pod-install-特别慢的终极解决方案😋"><a href="#pod-install-特别慢的终极解决方案😋" class="headerlink" title="pod install 特别慢的终极解决方案😋"></a>pod install 特别慢的终极解决方案😋</h2><p><strong>pod install 在终端更新慢</strong> 其实真正慢的并不在 <strong>pod</strong> 命令，而是在于 <strong>github</strong>访问速度慢，那么真正的解决方案就是要加快 <strong>git</strong>命令的速度。当然，加速<strong>git</strong>的方法就是开代理。</p><p>我使用的 <strong>shadowsocks代理</strong>，默认代理端口为<strong>1080</strong>，打开小飞机，配置好代理之后，去终端输入<strong>git</strong>配置命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global http.https://github.com.proxy socks5://127.0.0.1:1086</div><div class="line"># socks5://127.0.0.1:1086 1086端口号是shadowsocks的默认设置，实际以自己的机器为准</div></pre></td></tr></table></figure><p>如此就从根本上解决了问题。<strong>代理前 10k/s ☹️ 代理后 600k/s</strong> 😍</p><p>如果要恢复/移除上面设置的 <strong>git</strong>代理，使用如下命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset http.https://github.com.proxy</div></pre></td></tr></table></figure><h5 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h5><ul><li><a href="https://blog.csdn.net/wuquan0625/article/details/47401235" target="_blank" rel="external">https://blog.csdn.net/wuquan0625/article/details/47401235</a></li></ul>]]></content>
     
     <summary type="html">
     
@@ -117,26 +117,6 @@
   </entry>
   
   <entry>
-    <title>Match工具介绍</title>
-    <link href="http://petpwiuta.github.io/2018/12/06/Match%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/"/>
-    <id>http://petpwiuta.github.io/2018/12/06/Match工具介绍/</id>
-    <published>2018-12-06T09:45:05.064Z</published>
-    <updated>2018-12-26T06:11:28.955Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Match工具介绍"><a href="#Match工具介绍" class="headerlink" title="Match工具介绍"></a>Match工具介绍</h3><p>Match是Fastlane工具集中非常重要的一个，它负责iOS应用生命周期中的各种证书和profile的创建和维护。想想各位被各种证书和profile问题所支配的恐惧就知道它的厉害之处。</p><h4 id="1-功能特性"><a href="#1-功能特性" class="headerlink" title="1 功能特性"></a>1 功能特性</h4><ul><li><p>创建、更新和删除Xcode所需的各种证书和Profiles</p></li><li><p>使用Git管理上述的文件，达到团队内共享证书和Profiles的目的</p></li><li><p>证书和Profiles在进入Git仓库时会进行加密，进一步保证安全性</p></li><li><p>支持多账户，多target</p></li></ul><h4 id="2-原理"><a href="#2-原理" class="headerlink" title="2 原理"></a>2 原理</h4><p>Match内部使用cert、sign来分别进行证书以及profiles的管理。cert、sign是对苹果官方的API的二次封装，使用它们配置好证书和profiles以后，再指定一个Git仓库的地址，以及加密证书和profiles的密码，Match就会用指定的密码把证书和profiles加密，然后在把加密后的文件commit到版本库，并push到Git仓库地址。当其他成员需要这些信息的时候使用Match命令，它就会从Git仓库pull加密过的文件，并询问密码，得到密码后再把这些文件解密并添加到keychain和Profiles目录。这样就像Git管理代码一样实现了团队内共享证书和Profiles的目的。</p><h4 id="3-用法"><a href="#3-用法" class="headerlink" title="3 用法"></a>3 用法</h4><h5 id="3-1-初始化"><a href="#3-1-初始化" class="headerlink" title="3.1 初始化"></a>3.1 初始化</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ fastlane match init</div></pre></td></tr></table></figure><p>会进入交互式shell环境，按照实际情况输入app_identifier、team_id、username、git_url等信息后会在fastlane目录生成Matchfile。</p><h5 id="3-2-生成并同步证书和profile"><a href="#3-2-生成并同步证书和profile" class="headerlink" title="3.2 生成并同步证书和profile"></a>3.2 生成并同步证书和profile</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 开发环境证书</span></div><div class="line">$ fastlane match development</div><div class="line"><span class="comment"># 产品环境证书</span></div><div class="line">$ fastlane match appstore</div><div class="line"><span class="comment"># 内测环境证书</span></div><div class="line">$ fastlane match adhoc</div></pre></td></tr></table></figure><h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><ul><li><p><a href="http://icyleaf.com/2017/03/fastlane-match-in-action/" target="_blank" rel="external">你虐我千百遍，我待你如初恋，直到我遇到 match</a></p></li><li><p><a href="https://docs.fastlane.tools/actions/match/" target="_blank" rel="external">match doc</a></p></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      Match工具介绍
-    
-    </summary>
-    
-      <category term="iOS开发" scheme="http://petpwiuta.github.io/categories/iOS%E5%BC%80%E5%8F%91/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Xcode Signing 机制</title>
     <link href="http://petpwiuta.github.io/2018/12/06/Xcode%E7%AD%BE%E5%90%8D%E6%9C%BA%E5%88%B6/"/>
     <id>http://petpwiuta.github.io/2018/12/06/Xcode签名机制/</id>
@@ -148,6 +128,26 @@
     <summary type="html">
     
       Xcode Signing 机制
+    
+    </summary>
+    
+      <category term="iOS开发" scheme="http://petpwiuta.github.io/categories/iOS%E5%BC%80%E5%8F%91/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Match工具介绍</title>
+    <link href="http://petpwiuta.github.io/2018/12/06/Match%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://petpwiuta.github.io/2018/12/06/Match工具介绍/</id>
+    <published>2018-12-06T09:45:05.064Z</published>
+    <updated>2018-12-26T06:11:28.955Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Match工具介绍"><a href="#Match工具介绍" class="headerlink" title="Match工具介绍"></a>Match工具介绍</h3><p>Match是Fastlane工具集中非常重要的一个，它负责iOS应用生命周期中的各种证书和profile的创建和维护。想想各位被各种证书和profile问题所支配的恐惧就知道它的厉害之处。</p><h4 id="1-功能特性"><a href="#1-功能特性" class="headerlink" title="1 功能特性"></a>1 功能特性</h4><ul><li><p>创建、更新和删除Xcode所需的各种证书和Profiles</p></li><li><p>使用Git管理上述的文件，达到团队内共享证书和Profiles的目的</p></li><li><p>证书和Profiles在进入Git仓库时会进行加密，进一步保证安全性</p></li><li><p>支持多账户，多target</p></li></ul><h4 id="2-原理"><a href="#2-原理" class="headerlink" title="2 原理"></a>2 原理</h4><p>Match内部使用cert、sign来分别进行证书以及profiles的管理。cert、sign是对苹果官方的API的二次封装，使用它们配置好证书和profiles以后，再指定一个Git仓库的地址，以及加密证书和profiles的密码，Match就会用指定的密码把证书和profiles加密，然后在把加密后的文件commit到版本库，并push到Git仓库地址。当其他成员需要这些信息的时候使用Match命令，它就会从Git仓库pull加密过的文件，并询问密码，得到密码后再把这些文件解密并添加到keychain和Profiles目录。这样就像Git管理代码一样实现了团队内共享证书和Profiles的目的。</p><h4 id="3-用法"><a href="#3-用法" class="headerlink" title="3 用法"></a>3 用法</h4><h5 id="3-1-初始化"><a href="#3-1-初始化" class="headerlink" title="3.1 初始化"></a>3.1 初始化</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ fastlane match init</div></pre></td></tr></table></figure><p>会进入交互式shell环境，按照实际情况输入app_identifier、team_id、username、git_url等信息后会在fastlane目录生成Matchfile。</p><h5 id="3-2-生成并同步证书和profile"><a href="#3-2-生成并同步证书和profile" class="headerlink" title="3.2 生成并同步证书和profile"></a>3.2 生成并同步证书和profile</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 开发环境证书</span></div><div class="line">$ fastlane match development</div><div class="line"><span class="comment"># 产品环境证书</span></div><div class="line">$ fastlane match appstore</div><div class="line"><span class="comment"># 内测环境证书</span></div><div class="line">$ fastlane match adhoc</div></pre></td></tr></table></figure><h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><ul><li><p><a href="http://icyleaf.com/2017/03/fastlane-match-in-action/" target="_blank" rel="external">你虐我千百遍，我待你如初恋，直到我遇到 match</a></p></li><li><p><a href="https://docs.fastlane.tools/actions/match/" target="_blank" rel="external">match doc</a></p></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      Match工具介绍
     
     </summary>
     
