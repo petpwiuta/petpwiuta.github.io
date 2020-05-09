@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="iOS界面渲染机制笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS界面渲染机制">
+<meta property="og:url" content="http://petpwiuta.github.io/2016/10/07/advanced_graphics_and_animation_performance/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="iOS界面渲染机制笔记">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap1.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap2.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap3.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap4.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap5.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap6.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap7.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap8.png">
+<meta property="article:published_time" content="2016-10-07T11:45:27.000Z">
+<meta property="article:modified_time" content="2020-05-09T08:52:18.225Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://petpwiuta.github.io/images/advanced_graphics_and_animation_performance/cap1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2016/10/07/advanced_graphics_and_animation_performance/"/>
+
+
+
+
+
+  <title>iOS界面渲染机制 | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2016/10/07/advanced_graphics_and_animation_performance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS界面渲染机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-07T19:45:27+08:00">
+                2016-10-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  iOS界面渲染机制笔记
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Core-Animation-Pipeline"><a href="#Core-Animation-Pipeline" class="headerlink" title="Core Animation Pipeline"></a>Core Animation Pipeline</h3><p>Core Animation是iOS和Mac OS界面渲染的核心组件，其实动画仅仅算是本身的部分功能，所以这个这个组件的名字不太贴切。桌面和移动端的GPU性能差别很大，所以两端的组件底层细节估计会不一样，这个主要是讲iOS系统上的Core Animation的工作流程。</p>
+<p>当你把一个View提交到视图树上并写好约束以后，系统会先进行layot确定其在屏幕上的位置，然后根据是否重载draw方法来调用draw函数（如果重写了就调用），并把绘制结果转换成位图保存起来，再把视图中的图片等数据解压成bitmap或者做一些变换，最后再按照视图树递归式把树形结构打包成数据模型发送给渲染进程，整个过程称之为Commit Transaction。</p>
+<p>渲染进程收到IPC调用以后把收到的数据还原成树形结构，经过一些处理逻辑后，调用硬件的绘制方法完成绘制。整个流程如下图所示：</p>
+<p><img src="/images/advanced_graphics_and_animation_performance/cap1.png" style="zoom:100%" /></p>
+<p>Commit Transaction 主要有4个过程：</p>
+<ol>
+<li><p>Layout</p>
+<p>在这个阶段会按照视图树调用view的layoutSubviews方法，以及数据库查询、一些业务逻辑计算等。这个阶段一般是CPU或IO密集型操作。</p>
+</li>
+<li><p>Draw</p>
+<p>调用<code>drawRect:</code> 方法来绘图，以及绘制文本，一般是CPU或者内存密集型操作。</p>
+</li>
+<li><p>Prepare</p>
+<p>做一些提交前的准备工作，如图片解码（如果是压缩图片的话，会解压成bitmap），或者图片格式转换。</p>
+</li>
+<li><p>Commit</p>
+<p>把layer tree打包成数据模型发送渲染进程，这个过程是递归进行的，所以如果layer tree比较复杂的话，这个过程会很花时间。</p>
+</li>
+</ol>
+<h3 id="Animation"><a href="#Animation" class="headerlink" title="Animation"></a>Animation</h3><p>iOS动画的执行需要先了解iOS中的视图树和呈现树。视图树存储的就是视图的树形结构，当的执行下面类似的代码时</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[UIView animateWithDuration:1 animations:^&#123;</span><br><span class="line">        view.frame &#x3D; CGRectMake(new, new, new, new);</span><br><span class="line"> &#125;];</span><br></pre></td></tr></table></figure>
+<p>对视图树的修改会立即生效，设置了新的frame后马上再读发现值已经是最新的了，视图树始终存储着是最终的值。反之呈现树就是当前view的数值，当在做一段动画效果时，可以通过<code>self.view.layer.presentationLayer</code>来获取呈现树的值。它的值会随着动画的执行而变化。</p>
+<p>当给一个View添加动画时，可以分为3个阶段：</p>
+<ol>
+<li>创建动画效果，一般就是用UIView的block方法来创建隐式动画</li>
+<li>向渲染进程提交动画请求，这个过程和前面的Core Animation Pipeline一样</li>
+<li>渲染进程解析出动画对象，根据持续时间和效果插值绘制对应的动画效果</li>
+</ol>
+<p><img src="/images/advanced_graphics_and_animation_performance/cap2.png" style="zoom:100%" /></p>
+<h3 id="渲染流程"><a href="#渲染流程" class="headerlink" title="渲染流程"></a>渲染流程</h3><p>iOS的GPU以前是用的Imagination的PowerVR架构，后来和Imagination闹掰，但是GPU架构基本上还是沿袭了PowerVR那一套的设计。PowerVR的看家本领就是Tile Based Deferred Rendering（TBDR），字面意义就是分片式延迟渲染。</p>
+<p>这种渲染方式是先把屏幕分割成一定大小的独立区域（例如32px * 32px），如图3-1所示，这样GPU每次仅仅处理一个小块，因为移动GPU的总线带宽有限，所以分解成多块能减轻带宽压力。</p>
+<p>在TBDR的渲染流水线里，几何阶段生成（已经经过裁剪，屏幕外的部分已经被丢弃）的多边形或者说三角形参数信息都存放在一个名为Parameter Buffer缓存里（这个缓存在soc芯片上，类似于桌面cpu的L1、L2缓存），理论上里面保存的应该是同一帧画面里的所有三角形信息，为了提高能效，GPU会对所有三角形运行HSR算法（Hidden Surface Removal，隐面消除，这里的隐面是指被其他实体多边形遮盖的多边形）来消除被挡住的部分，最终只渲染屏幕上能看到的三角形所覆盖的片元。</p>
+<p>这一步是TBDR独有的，相较之下，传统的GPU在几何阶段扔出到三角形后纹理单元/着色单元就马上渲染，因此人们将传统的GPU渲染方式称作立即渲染器。把上面的加入了HSR逻辑的叫做延迟渲染。</p>
+<p><img src="/images/advanced_graphics_and_animation_performance/cap3.png" style="zoom:30%" />       <img src="/images/advanced_graphics_and_animation_performance/cap4.png" style="zoom:29%" />          <img src="/images/advanced_graphics_and_animation_performance/cap5.png" style="zoom:29%" /></p>
+<p>​            图3-1                                                         图3-2                                                                     图3-3</p>
+<p>得到屏幕上能看到的三角形以后，会把这些数据发送到后续的光栅化流程中去，在经过后续的处理后GPU就绘制出了对应的像素，最后输出到frame buffer中。</p>
+<p><img src="/images/advanced_graphics_and_animation_performance/cap6.png" style="zoom:40%" /></p>
+<h3 id="复杂效果的渲染"><a href="#复杂效果的渲染" class="headerlink" title="复杂效果的渲染"></a>复杂效果的渲染</h3><p>在上一节说的是简单效果的渲染，如果效果中有遮罩，毛玻璃等较复杂的效果，则需要经过多次简单渲染后才能达到最终效果。</p>
+<ul>
+<li><p>遮罩效果</p>
+<p>遮罩效果是经过3次简单渲染流程合成的，第一步先渲染出遮罩层；接着再渲染出类容，然后最后一步是把前两步的结果再合并起来，得到最终结果。这里绘制的图像并不是直接绘制到frame buffer中，所以也叫做离屏渲染。在实际开发中，经常会用到圆角，一般是设置<code>cornerRadius</code>和<code>masksToBounds</code>两个属性，其实这两个属性都设置时就是在layer上添加了一个遮罩效果，所以也会触发离屏渲染。</p>
+<p>不过离屏渲染并不是总是低效的，这里是GPU用硬件来离屏渲染，所以速度仍然很快。如果重载draw方法来绘图，这种离屏渲染是CPU来执行，而且渲染后还要再发送到GPU中处理，效率就比前者低很多。</p>
+<p><img src="/images/advanced_graphics_and_animation_performance/cap7.png" style="zoom:50%" /></p>
+</li>
+</ul>
+<ul>
+<li><p>毛玻璃效果</p>
+<p>毛玻璃效果的主要流程和遮罩差不多，就是流程会多很多步，最终效果需要由5个中间步骤合成。所以毛玻璃效果对硬件的要求比较高。</p>
+<p><img src="/images/advanced_graphics_and_animation_performance/cap8.png" style="zoom:50%" /></p>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://www.evolife.cn/html/2016/87798_5.html" target="_blank" rel="noopener">移动图形芯片的故事（上）GPU是什么鬼？</a></p>
+<p><a href="https://www.evolife.cn/html/2016/87847_2.html" target="_blank" rel="noopener">移动图形芯片的故事（下）IMR与TBR/TBDR两大流派的爱恨情仇</a></p>
+<p><a href="https://www.imgtec.com/blog/a-look-at-the-powervr-graphics-architecture-tile-based-rendering/" target="_blank" rel="noopener">A look at the PowerVR graphics architecture: Tile-based rendering</a></p>
+<p><a href="https://www.imgtec.com/blog/the-dr-in-tbdr-deferred-rendering-in-rogue/" target="_blank" rel="noopener">A look at the PowerVR graphics architecture: Deferred rendering</a></p>
+<p><a href="https://www.imgtec.com/blog/dialling-it-up-on-powervr-gpus-how-to-optimise-automotive-dashboards-for-efficient-rendering/" target="_blank" rel="noopener">Dialling it up on PowerVR GPUs: how to optimise automotive dashboards for efficient rendering</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/07/event_chain/" rel="next" title="iOS事件处理">
+                <i class="fa fa-chevron-left"></i> iOS事件处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/08/cell-height-calc-with-autolayout/" rel="prev" title="项目中Cell自动计算行高的实践">
+                项目中Cell自动计算行高的实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Core-Animation-Pipeline"><span class="nav-number">1.</span> <span class="nav-text">Core Animation Pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Animation"><span class="nav-number">2.</span> <span class="nav-text">Animation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染流程"><span class="nav-number">3.</span> <span class="nav-text">渲染流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂效果的渲染"><span class="nav-number">4.</span> <span class="nav-text">复杂效果的渲染</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

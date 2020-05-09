@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="UIStackView 官方文档翻译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIStackView">
+<meta property="og:url" content="http://petpwiuta.github.io/2019/04/01/UIStackView/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="UIStackView 官方文档翻译">
+<meta property="og:image" content="http://petpwiuta.github.io/images/stackview.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/embedin.png">
+<meta property="article:published_time" content="2019-04-01T02:46:11.000Z">
+<meta property="article:modified_time" content="2019-04-01T02:46:11.000Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://petpwiuta.github.io/images/stackview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2019/04/01/UIStackView/"/>
+
+
+
+
+
+  <title>UIStackView | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2019/04/01/UIStackView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UIStackView</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T10:46:11+08:00">
+                2019-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  UIStackView 官方文档翻译
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="UIStackView"><a href="#UIStackView" class="headerlink" title="UIStackView"></a>UIStackView</h1><p>UIStackview是一个流式布局的工具。贼好用😝😝</p>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>UIStackView可以说是Auto Layout最强有力的助手，通过它能大幅简化多个view规律性的布局逻辑。stack view所管理的view都在它的 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616232-arrangedsubviews" target="_blank" rel="noopener"><code>arrangedSubviews</code></a> 属性里。stack view会把这些view根据其在数组中的先后顺序沿着横向/纵向（取决于<a href="https://developer.apple.com/documentation/uikit/uistackview/1616223-axis" target="_blank" rel="noopener"><code>axis</code></a>属性）排列，然当具体的排列效果还和 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616233-distribution" target="_blank" rel="noopener"><code>distribution</code></a>, <a href="https://developer.apple.com/documentation/uikit/uistackview/1616243-alignment" target="_blank" rel="noopener"><code>alignment</code></a>, <a href="https://developer.apple.com/documentation/uikit/uistackview/1616225-spacing" target="_blank" rel="noopener"><code>spacing</code></a>, 等属性有关。</p>
+<p><img src="/images/stackview.png" style="zoom:40%" /></p>
+<p>在Storyboard中使用stack view很简单，打开控件库，选择Horizontal Stack View 或 Vertical Stack View拖到view上，再拖一些其他控件到stack view里面就行了。如果约束足够明确的话Interface Builder会根据你的内容自动调整stack view的大小。另外还有一个快速使用stack view的小技巧，就是选中一组控件以后点击Interface Builder右下角的 <strong>Embed In</strong> <img src="/images/embedin.png" style="zoom:20%" /> 按钮选择stack view就能快速用stack view把选中的控件wrap起来。</p>
+<h3 id="Stack-View-和-Auto-Layout"><a href="#Stack-View-和-Auto-Layout" class="headerlink" title="Stack View 和 Auto Layout"></a>Stack View 和 Auto Layout</h3><p>stack view通过自动布局来确定所管理的view的大小和位置。<code>axis</code>决定了stack view是水平排列还是垂直排列。如果设置 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616220-islayoutmarginsrelativearrangeme" target="_blank" rel="noopener"><code>isLayoutMarginsRelativeArrangement</code></a> 属性为 <code>true</code> ，stack view会基于margin来决定view之间位置（不设置的话就是基于视图的边缘来计算）。</p>
+<p><code>distribution</code>属性用来设置沿着axis方向的各个view的排列方式。当axis是<code>UILayoutConstraintAxisHorizontal</code>就是设置水平方向各个view的排列关系，当axis是<code>UILayoutConstraintAxisVertical</code>就是设置垂直方向各个view的排列关系。</p>
+<p>stack view对子view进行排列时，会依次调用view的<a href="https://developer.apple.com/documentation/uikit/uiview/1622600-intrinsiccontentsize" target="_blank" rel="noopener"><code>intrinsicContentSize</code></a>属性来确定其大小。有一个例外，就是distribution设置成<a href="https://developer.apple.com/documentation/uikit/uistackview/distribution/fillequally" target="_blank" rel="noopener"><code>UIStackView.Distribution.fillEqually</code></a>时，此时stack view会尽量把所有的view拉伸成同样的长度，均匀地填充整个容器。stack view在拉伸时会尝试把其他的view拉得和最长的那个一样长。</p>
+<p><code>alignment</code>属性用来设置垂直于axis方向的各个view的对齐方式。当axis是<code>UILayoutConstraintAxisHorizontal</code>就是设置垂直方向各个view的对齐关系，当axis是<code>UILayoutConstraintAxisVertical</code>就是设置水平方向各个view的对齐关系。</p>
+<p>stack view对子view进行对齐时，也会依次调用view的<a href="https://developer.apple.com/documentation/uikit/uiview/1622600-intrinsiccontentsize" target="_blank" rel="noopener"><code>intrinsicContentSize</code></a>属性来确定其大小。当然也有一个例外，就是alignment设置为<a href="https://developer.apple.com/documentation/uikit/uistackview/alignment/fill" target="_blank" rel="noopener"><code>UIStackView.Alignment.fill</code></a> 时，此时stack view会尽量把所有的view拉伸成同样的高度，均匀地填充整个容器。stack view在拉伸时会尝试把其他的view拉得和最高的那个一样高。</p>
+<h3 id="Stack-View的位置和大小"><a href="#Stack-View的位置和大小" class="headerlink" title="Stack View的位置和大小"></a>Stack View的位置和大小</h3><p>stack view可以根据所管理的view推导出自己的大小，但是它无法确定自己的位置。所需要明确地写出位置约束。只要指定两个的相邻边的位置stack view就能确定其自身的位置。与此同时stack view也会根据内容来自动调整自己的宽度和高度：</p>
+<ul>
+<li>沿着axis方向的宽度等于其管理的所有view的尺寸加上view之间的间距</li>
+<li>垂直于axis方向的高度等于所管理的view中最高的那个</li>
+<li>如果stack view的 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616220-islayoutmarginsrelativearrangeme" target="_blank" rel="noopener"><code>isLayoutMarginsRelativeArrangement</code></a> 属性设置为 <code>true</code>, stack view的尺寸会包含margins的大小</li>
+</ul>
+<p>当然，上面的这些都是默认的行为，如果不能满足要求还能直接给stack view加高度或宽度的约束。stack view会根据 <a href="https://developer.apple.com/documentation/uikit/uistackview/distribution" target="_blank" rel="noopener"><code>UIStackView.Distribution</code></a> 和 <a href="https://developer.apple.com/documentation/uikit/uistackview/alignment" target="_blank" rel="noopener"><code>UIStackView.Alignment</code></a> 等设置来调整子view的排列和对齐来满足约束条件。 </p>
+<p>虽然stack view仅仅只是一个布局容器，但是它也支持基于first/last baseline的布局：</p>
+<ul>
+<li>horizontal方向的stack view <a href="https://developer.apple.com/documentation/uikit/uiview/1622452-forfirstbaselinelayout" target="_blank" rel="noopener"><code>forFirstBaselineLayout</code></a>和 <a href="https://developer.apple.com/documentation/uikit/uiview/1622633-forlastbaselinelayout" target="_blank" rel="noopener"><code>forLastBaselineLayout</code></a> 会返回所管理的view中最高的那个对应的属性。 如果最高的那个也是stack view的话会进行递归调用，直到返回正常结果</li>
+<li>vertical方向的stack view <code>forFirstBaselineLayout</code>会返回所管理的第一个子view，<code>forLastBaselineLayout</code>会返回最后一个。同样的如果第一个/最后一个还是stack view的话也会递归式调用</li>
+</ul>
+<blockquote>
+<p>注意</p>
+<p>Baseline alignment 仅仅只能在view的frame高度等于自己的intrinsic.height时才能正常工作，换句话说就是view如果被压缩或拉伸的话baseline alignment可能就会有bug</p>
+</blockquote>
+<h3 id="Stack-View的常用属性"><a href="#Stack-View的常用属性" class="headerlink" title="Stack View的常用属性"></a>Stack View的常用属性</h3><p>stack view虽然是view的子类，它只负责管理其排列视图的位置和大小，本身不会被渲染出来。所以一些外观相关的属性（如<a href="https://developer.apple.com/documentation/uikit/uiview/1622591-backgroundcolor" target="_blank" rel="noopener"><code>backgroundColor</code></a>）对它没有效果，也不能重载 <a href="https://developer.apple.com/documentation/uikit/uiview/1622626-layerclass" target="_blank" rel="noopener"><code>layerClass</code></a>, <a href="https://developer.apple.com/documentation/uikit/uiview/1622529-draw" target="_blank" rel="noopener"><code>draw(_:)</code></a>等方法。</p>
+<ul>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616223-axis" target="_blank" rel="noopener"><code>axis</code></a> 确定了stack的方向，选项是vertically/horizontally.</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616233-distribution" target="_blank" rel="noopener"><code>distribution</code></a> 用来设置沿着axis方向的各个view的排列方式</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616243-alignment" target="_blank" rel="noopener"><code>alignment</code></a> 用来设置垂直与axis方向的各个view的对齐方式</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616225-spacing" target="_blank" rel="noopener"><code>spacing</code></a> view之间的最小间距</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616224-isbaselinerelativearrangement" target="_blank" rel="noopener"><code>isBaselineRelativeArrangement</code></a> 当axis设置为垂直方向时才有用。垂直方向的view是否用基于baseline排列，这个属性在排列一些文本控件时很管用</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uistackview/1616220-islayoutmarginsrelativearrangeme" target="_blank" rel="noopener"><code>isLayoutMarginsRelativeArrangement</code></a> 是否基于margin进行排列</li>
+</ul>
+<h3 id="Stack-View的Arranged-Views和Subviews"><a href="#Stack-View的Arranged-Views和Subviews" class="headerlink" title="Stack View的Arranged Views和Subviews"></a>Stack View的Arranged Views和Subviews</h3><p>stack view保证 <a href="https://developer.apple.com/documentation/uikit/uistackview/1616232-arrangedsubviews" target="_blank" rel="noopener"><code>arrangedSubviews</code></a> 属性一直是其 <a href="https://developer.apple.com/documentation/uikit/uiview/1622614-subviews" target="_blank" rel="noopener"><code>subviews</code></a> 的子集. 具体规则如下:</p>
+<ul>
+<li><p>当stack view添加view到<code>arrangedSubviews</code> 时, 它也会把view添加到自己的subviews数组里面（如果已经添加过就不重复添加）</p>
+</li>
+<li><p>当一个view从stack view的subview中移除时，它也会从 <code>arrangedSubviews</code> 中移除</p>
+</li>
+<li><p>当一个view从stack view的 <code>arrangedSubviews</code> 中移除时，这个view<font color="red"> <strong>并不会</strong></font>从stack view的<code>arrangedSubviews</code>中移除</p>
+</li>
+</ul>
+<p>  虽然<code>arrangedSubviews</code>属性一直是其<code>subviews</code>的子集，但这两个数组内的元素顺序并不一定是一致的。</p>
+<ul>
+<li><code>arrangedSubviews</code>中的顺序决定了view在容器中出现的顺序。在水平方向的stack view中，view是沿着阅读方向（绝大部分语言是从左到右，阿拉伯语是从右到左。不过这个不取决于系统语言设置，取决于布局是用left/right还是leading/trailing）排列的。index小的在前，index大的在后</li>
+<li>而<code>subviews</code> 中的顺序决定子view的Z-order。Z-order高的会把低的view盖住</li>
+</ul>
+<h3 id="Stack-View-动态内容"><a href="#Stack-View-动态内容" class="headerlink" title="Stack View 动态内容"></a>Stack View 动态内容</h3><p>当对stack view<a href="https://developer.apple.com/documentation/uikit/uistackview/1616232-arrangedsubviews" target="_blank" rel="noopener"><code>arrangedSubviews</code></a> 进行添加/插入/删除，以及对它所管理的子view的属性进行修改时，stack view的内容会自动更新。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Appears to remove the first arranged view from the stack.</span></span><br><span class="line"><span class="comment">// The view is still inside the stack, it's just no longer visible, and no longer contributes to the layout.</span></span><br><span class="line"><span class="keyword">let</span> firstView = stackView.arrangedSubviews[<span class="number">0</span>]</span><br><span class="line">firstView.isHidden = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>同样的，如果修改stack view的属性，它的内容也会根据属性的变化而动态地调整。比如设置<a href="https://developer.apple.com/documentation/uikit/uistackview/1616223-axis" target="_blank" rel="noopener"><code>axis</code></a>动态地改变stack view的方向。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Toggle between a vertical and horizontal stack</span></span><br><span class="line"><span class="keyword">if</span> stackView.axis == .<span class="type">Horizontal</span> &#123;</span><br><span class="line">    stackView.axis = .<span class="type">Vertical</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    stackView.axis = .<span class="type">Horizontal</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以在动画block里面调整子view的属性。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Animates removing the first item in the stack.</span></span><br><span class="line"><span class="type">UIView</span>.animateWithDuration(<span class="number">0.25</span>) &#123; () -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line">    <span class="keyword">let</span> firstView = stackView.arrangedSubviews[<span class="number">0</span>]</span><br><span class="line">    firstView.isHidden = <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/16/%E4%BD%BF%E7%94%A8Jenkins%E8%BF%9B%E8%A1%8CiOS%E9%A1%B9%E7%9B%AE%E8%87%AA%E5%8A%A8%E5%8C%96%E5%8F%91%E5%B8%83/" rel="next" title="使用Jenkins进行iOS项目自动化发布">
+                <i class="fa fa-chevron-left"></i> 使用Jenkins进行iOS项目自动化发布
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/03/pod%20install%20%E7%89%B9%E5%88%AB%E6%85%A2%E7%9A%84%E7%BB%88%E6%9E%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="prev" title="pod install 特别慢的终极解决方案😋">
+                pod install 特别慢的终极解决方案😋 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UIStackView"><span class="nav-number">1.</span> <span class="nav-text">UIStackView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overview"><span class="nav-number">1.0.1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-View-和-Auto-Layout"><span class="nav-number">1.0.2.</span> <span class="nav-text">Stack View 和 Auto Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-View的位置和大小"><span class="nav-number">1.0.3.</span> <span class="nav-text">Stack View的位置和大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-View的常用属性"><span class="nav-number">1.0.4.</span> <span class="nav-text">Stack View的常用属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-View的Arranged-Views和Subviews"><span class="nav-number">1.0.5.</span> <span class="nav-text">Stack View的Arranged Views和Subviews</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-View-动态内容"><span class="nav-number">1.0.6.</span> <span class="nav-text">Stack View 动态内容</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

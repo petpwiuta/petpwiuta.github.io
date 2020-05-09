@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="《程序员的自我修养》的读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员的自我修养：静态链接">
+<meta property="og:url" content="http://petpwiuta.github.io/2020/05/09/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="《程序员的自我修养》的读书笔记">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/3.4-1.png">
+<meta property="article:published_time" content="2020-05-09T05:38:24.809Z">
+<meta property="article:modified_time" content="2020-05-09T05:38:24.809Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://petpwiuta.github.io/images/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/3.4-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2020/05/09/程序员的自我修养：静态链接/"/>
+
+
+
+
+
+  <title>程序员的自我修养：静态链接 | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2020/05/09/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">程序员的自我修养：静态链接</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-09T13:38:24+08:00">
+                2020-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">CS基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  《程序员的自我修养》的读书笔记
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="3-目标文件里有什么"><a href="#3-目标文件里有什么" class="headerlink" title="3 目标文件里有什么"></a>3 目标文件里有什么</h2><h3 id="3-1-目标文件格式"><a href="#3-1-目标文件格式" class="headerlink" title="3.1 目标文件格式"></a>3.1 目标文件格式</h3><p>现在PC平台流行的可执行文件格式主要是Windows的PE（Portable Executable）和Linux的ELF（Executable Linkable Format）格式。它们都是COFF（Common file format）格式的变种。</p>
+<p>其实可执行文件与动态库/静态库文件大致结构是类似的，仅仅是因为不同目的而具有不同的段数据而已。目标文件大致可分为以下几种：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">ELF文件类型</th>
+<th style="text-align:center">说明</th>
+<th style="text-align:center">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">可从定位文件（Relocatable File）</td>
+<td style="text-align:center">这类文件包含了代码和数据，可以被用来链接成可执行文件或共享目标文件，静态链接库也可以归为这一类</td>
+<td style="text-align:center">Linux的<code>.o</code> / Windows的<code>.obj</code></td>
+</tr>
+<tr>
+<td style="text-align:center">可执行文件（Executable File）</td>
+<td style="text-align:center">这类文件包含了代码和数据，可以直接执行，一般都没有扩展名</td>
+<td style="text-align:center">Linux的<code>.out</code> / Windows的<code>.exe</code></td>
+</tr>
+<tr>
+<td style="text-align:center">共享目标文件（Shared Object File）</td>
+<td style="text-align:center">这种文件包含了代码和数据，可以跟其他的可重定位文件和共享目标文件静态链接。也可以通过动态链接器将几个这种共享目标文件与可执行文件结合，作为进程映像的部分来运行</td>
+<td style="text-align:center">Linux的<code>.so</code> / Windows的<code>.dll</code></td>
+</tr>
+<tr>
+<td style="text-align:center">核心转储文件（Core Dump File）</td>
+<td style="text-align:center">当进程意外终止时，系统可以将该进程的地址空间的内容及终止时的一些其他信息转储到核心转储文件</td>
+<td style="text-align:center">Linux的core dump</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="3-2-目标文件是什么样的"><a href="#3-2-目标文件是什么样的" class="headerlink" title="3.2 目标文件是什么样的"></a>3.2 目标文件是什么样的</h3><p>目标文件里面的内容有数据和机器码。这些内容被按照不同的属性分成了多个Section，也叫做“段”。如专门放代码的<code>.text</code>/<code>.code</code>段，专门放数据的<code>.data</code>段······</p>
+<p>很多段的名字都是以一个 <code>.</code>符号（句点）开始，这表示是系统保留的段，对于用户自己设立的段可以不以点号开始。</p>
+<p>总的来说程序员代码被编译后主要分成了两种段：指令和数据。指令和数据起始是分开存放的，这样做的原因主要是处于以下几点原因：</p>
+<ul>
+<li>系统可能会同时运行程序的多个副本，此时，程序的代码部分都是完全一样的，仅仅只有数据不同。指令部分抽离出来形成单独的段，可以让程序的副本共享同一个指令段，节省内存</li>
+<li>现代的CPU有着强大的指令缓存体系，指令放到独立的段，有助于CPU预加载指令，来提高执行性能</li>
+<li>指令放到单独的段可以精细控制内存访问属性，防止代码指令被修改</li>
+</ul>
+<h3 id="3-3-目标文件详解"><a href="#3-3-目标文件详解" class="headerlink" title="3.3 目标文件详解"></a>3.3 目标文件详解</h3><p>在Linux下，可以用objdump来把目标文件的段信息打印出来</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> objdump -s -d object_file.o  <span class="comment">#-s表示16进制打印，-d表示把所有包含指令的段反汇编</span></span></span><br></pre></td></tr></table></figure>
+<p><code>.data</code> 段保存了初始化了的全局静态变量和局部静态变量</p>
+<p><code>.rodata</code> 段保存了制度数据，如const修饰的变量，和字符串变量</p>
+<p><code>.bss</code> 段存放的是未初始化的全局变量和局部静态变量</p>
+<p>还有一些其他的常见的段：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">段名</th>
+<th style="text-align:center">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.rodata1</td>
+<td style="text-align:center">只读数据，和rodata类似</td>
+</tr>
+<tr>
+<td style="text-align:left">.comment</td>
+<td style="text-align:center">存放编译器版本信息</td>
+</tr>
+<tr>
+<td style="text-align:left">.debug</td>
+<td style="text-align:center">调试信息</td>
+</tr>
+<tr>
+<td style="text-align:left">.dynamic</td>
+<td style="text-align:center">动态链接库中才会用到，用来存放动态链接数据</td>
+</tr>
+<tr>
+<td style="text-align:left">.hash</td>
+<td style="text-align:center">加速符号查找的hash算法用到的段</td>
+</tr>
+<tr>
+<td style="text-align:left">.line</td>
+<td style="text-align:center">存储行号，用来调试</td>
+</tr>
+<tr>
+<td style="text-align:left">.note</td>
+<td style="text-align:center">额外的编译器信息，如公司名字等</td>
+</tr>
+<tr>
+<td style="text-align:left">.strtab</td>
+<td style="text-align:center">字符串表，用于存储ELF文件中用到的各种字符串</td>
+</tr>
+<tr>
+<td style="text-align:left">.symtab</td>
+<td style="text-align:center">符号表</td>
+</tr>
+<tr>
+<td style="text-align:left">.shstrtab</td>
+<td style="text-align:center">段名表</td>
+</tr>
+<tr>
+<td style="text-align:left">.plt / .got</td>
+<td style="text-align:center">动态链接的跳转和全局入口表</td>
+</tr>
+<tr>
+<td style="text-align:left">.init / .fini</td>
+<td style="text-align:center">C++全局构造和析构代码段</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="3-4-ELF文件结构描述"><a href="#3-4-ELF文件结构描述" class="headerlink" title="3.4 ELF文件结构描述"></a>3.4 ELF文件结构描述</h3><p>ELF目标文件格式的最前部是ELF文件头（ELF Header），它包含了描述整个文件的基本属性，如ELF文件版本、目标机器型号、程序入口地址等。</p>
+<p>紧接着是ELF文件各个段。其中最重要结构就是段表（Section Header Table），该表描述了ELF文件包含的所有段的信息，比如每个段的段名、长度、在文件中的偏移、读写权限及段的其他属性。</p>
+<p>还有就是一些ELF中辅助的结构，比如字符串表、符号表等：</p>
+<p><img src="/images/程序员的自我修养：静态链接/3.4-1.png" alt="3.4-1" style="zoom:50%;" /></p>
+<h4 id="3-4-1-文件头"><a href="#3-4-1-文件头" class="headerlink" title="3.4.1 文件头"></a>3.4.1 文件头</h4><p>可以用readelf命令来详细查看elf文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> readelf -h object_file.o <span class="comment">#-h 表示header</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">  ELF 头：</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Magic：  7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  类别:                              ELF32</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  数据:                              2 补码，小端序 (little endian)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Version:                           1 (current)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  OS/ABI:                            UNIX - System V</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  ABI 版本:                          0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  类型:                              EXEC (可执行文件)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  系统架构:                          Intel 80386</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  版本:                              0x1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  入口点地址：              0x8049000</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  程序头起点：              52 (bytes into file)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Start of section headers:          8228 (bytes into file)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Size of section headers:           40 (bytes)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Number of section headers:         4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Section header string table index: 3</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  标志：             0x0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Size of this header:               52 (bytes)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Start of program headers:          0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Size of program headers:           32 (bytes)</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Number of program headers:         3</span></span><br></pre></td></tr></table></figure>
+<p>从上而输出的结果可以看到，ELF的文件头中定义了ELF魔数、文件机器字节长度、数据存储方式、版本、运行平台、AB版本、ELF重定位类型、硬件平台、硬件平台版本入口地址、程序头入口和长度、段表的位置和长度及段的数量等。</p>
+<p>这里面非常重要的几个字段是：</p>
+<ul>
+<li><p>ELF Magic Number。这个常数用来识别这个文件属于ELF格式。很多二进制文件开头都有Magic Number，ELF格式也例外</p>
+</li>
+<li><p>类型（Type）。表示该ELF是可执行文件还是静态库/动态库或者是其他类型</p>
+</li>
+<li><p>入口点地址（Entry point address）。操作系统加载完该程序后，会从这个地址开始执行代码。只有可执行文件这个字段是有效的</p>
+</li>
+<li><p>段表信息</p>
+<ul>
+<li>段表的偏移地址（Start of section headers）。表示段表在ELF文件的第N个字节处开始</li>
+<li>段表的描述符大小（Size of section headers）。表示一个段表的描述结构的大小</li>
+<li>段表的描述符数量（Number of section headers）。表示有多少个段表</li>
+<li>段名的下标（Section header string table index）。</li>
+</ul>
+<p>一个段从哪儿开始，每个段长度多少，有多少个段。有了这些信息就能找到每个段的数据。</p>
+</li>
+<li><p>Segment表信息</p>
+<ul>
+<li>Segment的偏移地址（Start of program headers）。表示Segment表在ELF文件的第N个字节处开始</li>
+<li>Segment的描述符大小（Size of program headers）。表示一个Segment的描述结构的大小</li>
+<li>Segment的描述符数量（Number of program headers）。表示有多少个Segment表</li>
+</ul>
+<p>在ELF文件中，一般会有很多段，在把段加载到内存中时，会分配单独的内存页来控制段的内存权限。不过很多段都很小，这样单独分配一个内存页太浪费空间。所以处于节省内存的考虑，就在ELF文件中新增了Segment的概念，即把内存属性相似的段合在一起，形成Segment。</p>
+<p>这样本来以前可能有几十个段，现在合并内存权限相似的同类项，最后只形成几个Segment。这样系统在加载时只用进行有限的几种内存权限控制就行了。</p>
+<p>不过Segment和并不是彼此替代关系。所有的Segment和所有的段表示的内容必然是一样的，只是两者侧重点不同，段是为了方便编译和执行而出现的；而Segment则是为了方便系统加载程序而出现。</p>
+</li>
+</ul>
+<h4 id="3-4-2-段表"><a href="#3-4-2-段表" class="headerlink" title="3.4.2 段表"></a>3.4.2 段表</h4><p>之前用的readelf命令也可以用来来查看段表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> readelf -S object_file.o <span class="comment">#-S 表示Section</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">  There are 15 section headers, starting at offset 0x308:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  </span></span><br><span class="line"><span class="meta">#</span><span class="bash">  节头：</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 0]                   NULL            00000000 000000 000000 00      0   0  0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 1] .group            GROUP           00000000 000034 000008 04     12  12  4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 2] .text             PROGBITS        00000000 00003c 000051 00  AX  0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 3] .rel.text         REL             00000000 000244 000030 08   I 12   2  4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 4] .data             PROGBITS        00000000 00008d 000000 00  WA  0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 5] .bss              NOBITS          00000000 00008d 000000 00  WA  0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 6] .rodata           PROGBITS        00000000 00008d 00001a 00   A  0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 7] .text.__x86.get_p PROGBITS        00000000 0000a7 000004 00 AXG  0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 8] .comment          PROGBITS        00000000 0000ab 000012 01  MS  0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [ 9] .note.GNU-stack   PROGBITS        00000000 0000bd 000000 00      0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [10] .eh_frame         PROGBITS        00000000 0000c0 000050 00   A  0   0  4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [11] .rel.eh_frame     REL             00000000 000274 000010 08   I 12  10  4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [12] .symtab           SYMTAB          00000000 000110 0000f0 10     13  11  4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [13] .strtab           STRTAB          00000000 000200 000042 00      0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    [14] .shstrtab         STRTAB          00000000 000284 000082 00      0   0  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Key to Flags:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    W (write), A (alloc), X (execute), M (merge), S (strings), I (info),</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    L (link order), O (extra OS processing required), G (group), T (TLS),</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    C (compressed), x (unknown), o (OS specific), E (exclude),</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    p (processor specific)</span></span><br></pre></td></tr></table></figure>
+<p> readelf输出的结果就是ELF的文件段表的内容。段表的是一个“Elf32_Shdr”结构为元素的数组。“Elf_Shdr”又被称为段描述符。“Elf32_Shdr”结构被定义在“/usr/include/elf.h”，结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    Elf32_Word sh_name;</span><br><span class="line">    Elf32_Word sh_type;</span><br><span class="line">    Elf32_Word sh_flags;</span><br><span class="line">    Elf32_Addr sh_addr;</span><br><span class="line">    Elf32_off  sh_offset;</span><br><span class="line">    Elf32_Word sh_size;</span><br><span class="line">    Elf32_Word sh_link;</span><br><span class="line">    Elf32_Word sh_info;</span><br><span class="line">    Elf32 Word sh_addralign;</span><br><span class="line">    Elf32_Word sh_entsize;</span><br><span class="line">&#125; Elf32_Shdr;</span><br></pre></td></tr></table></figure>
+<p>Elf32_Shdr的各个成员含义如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sh_name</td>
+<td>段名是个字符串，它位于一个叫做“.shstrtab”的字符串表。sh_name是段名字符串在“.shstrtab”中的偏移</td>
+</tr>
+<tr>
+<td>sh_type</td>
+<td>类型</td>
+</tr>
+<tr>
+<td>sh_flags</td>
+<td>段标志</td>
+</tr>
+<tr>
+<td>sh_addr</td>
+<td>如果该段可以被加载，则sh_addr为该段被加载后在进程地址空间中的虚拟地址，否则该值为0</td>
+</tr>
+<tr>
+<td>sh_offset</td>
+<td>如果该段存在于文件中，则表示该段在文件中的偏移；否则无意义。比如sh_offset对于BSS段来说就没有意义</td>
+</tr>
+<tr>
+<td>sh_size</td>
+<td>段的长度</td>
+</tr>
+<tr>
+<td>sh_link / sh_info</td>
+<td>段的链接信息</td>
+</tr>
+<tr>
+<td>sh_addralign（段地址对齐）</td>
+<td>有些段对段地址对齐有要求，比如我们假设有个段刚开始的位置包含了一个double变量，因为x86系统要求浮点数的存储地址必须是本身的整数倍，也就是说保存 double变量的地址必须是8字节的整数倍。这样对一个段来说，它的 sh_addr必须是8的整数倍<br/><br/>由于地址对齐的数量都是2的指数倍，sh_addralign表示是地址对齐数量中的指数，即 sh_addrlign=3表示对齐为2的3次方倍，即8倍,依此类推所以一个段的地址 sh_addr必须满足下面的条件，$sh_addr\% \left( 2^{sh_addrlign}\right) =0 $ <br/><br/>如果 sh_addralign为0或1，则表示该段没有对齐要求</td>
+</tr>
+<tr>
+<td>sh_entsize（项的长度）</td>
+<td>有些段包含了一些固定大小的项，比如符号表，它包含的每个符号所占的大小都是一样的。对于这种段，sh_entsize表示每个项的大小。如果为0，则表示该段不包含固定大小的项</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="段的类型（sh-type）"><a href="#段的类型（sh-type）" class="headerlink" title="段的类型（sh_type）"></a>段的类型（sh_type）</h5><p>段的名字只是在链接和编译过程中有意义，但它不能真正地表示段的类型。我们也可以将一个数据段命名为“text”，对于编译器和链接器来说，主要决定段的属性的是段的类型(sh_type)和段的标志位(sh_flags)。该字段的取值如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th style="text-align:center">值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHT_NULL</td>
+<td style="text-align:center">0</td>
+<td>无效段</td>
+</tr>
+<tr>
+<td>SHT_PROGBITS</td>
+<td style="text-align:center">1</td>
+<td>代码段、数据段都是该类型</td>
+</tr>
+<tr>
+<td>SHT_SYMTAB</td>
+<td style="text-align:center">2</td>
+<td>符号表</td>
+</tr>
+<tr>
+<td>SHT_STRTAB</td>
+<td style="text-align:center">3</td>
+<td>字符串表</td>
+</tr>
+<tr>
+<td>SHT_RELA</td>
+<td style="text-align:center">4</td>
+<td>重定位表</td>
+</tr>
+<tr>
+<td>SHT_HASH</td>
+<td style="text-align:center">5</td>
+<td>符号表的哈希表</td>
+</tr>
+<tr>
+<td>SHT_DYNAMIC</td>
+<td style="text-align:center">6</td>
+<td>动态链接信息</td>
+</tr>
+<tr>
+<td>SHT_NOTE</td>
+<td style="text-align:center">7</td>
+<td>提示性信息</td>
+</tr>
+<tr>
+<td>SHT_NOBITS</td>
+<td style="text-align:center">8</td>
+<td>表示该段在文件中没有内容</td>
+</tr>
+<tr>
+<td>SHT_REL</td>
+<td style="text-align:center">9</td>
+<td>该段包含了重定位信息，用与静态链接</td>
+</tr>
+<tr>
+<td>SHT_SHLIB</td>
+<td style="text-align:center">10</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>SHT_DNYSYM</td>
+<td style="text-align:center">11</td>
+<td>动态链接的符号表</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="段的标志位（sh-flag）"><a href="#段的标志位（sh-flag）" class="headerlink" title="段的标志位（sh_flag）"></a>段的标志位（sh_flag）</h5><p>段的标志位表示该段在进程虚拟地址在地址空间中的属性，比如是否可写，是否可执行等。该字段的取值如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th style="text-align:center">值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHF_WRITE</td>
+<td style="text-align:center">1</td>
+<td>表示该段在进程空间中可写</td>
+</tr>
+<tr>
+<td>SHF_ALLOC</td>
+<td style="text-align:center">2</td>
+<td>表示该段在进程空间中须要分配空间。有些包含指示或控制信息的段不须要在进程空间中被分配空间，它们一般不会有这个标志。像代码段、数据段和bss段都会有这个标志位</td>
+</tr>
+<tr>
+<td>SHF_EXECINSTR</td>
+<td style="text-align:center">4</td>
+<td>表示该段在进程空间中可执行，一般代码段是这个属性</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>常见的段的标志位如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>段名</th>
+<th style="text-align:left">sh_type</th>
+<th style="text-align:center">sh_flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.bss</td>
+<td style="text-align:left">SHT_NOBITS</td>
+<td style="text-align:center">SHF_ALLOC + SHF_WRITE</td>
+</tr>
+<tr>
+<td>.comment</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">none</td>
+</tr>
+<tr>
+<td>.data</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">SHF_ALLOC + SHF_WRITE</td>
+</tr>
+<tr>
+<td>.debug</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">none</td>
+</tr>
+<tr>
+<td>.dynamic</td>
+<td style="text-align:left">SHT_DYNAMIC</td>
+<td style="text-align:center">SHF_ALLOC + SHF_WRITE<br/>有些系统里.dynamic是只读的只有SHF_ALLOC</td>
+</tr>
+<tr>
+<td>.hash</td>
+<td style="text-align:left">SHT_HASH</td>
+<td style="text-align:center">SHF_ALLOC</td>
+</tr>
+<tr>
+<td>.line</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">none</td>
+</tr>
+<tr>
+<td>.note</td>
+<td style="text-align:left">SHT_NOTE</td>
+<td style="text-align:center">none</td>
+</tr>
+<tr>
+<td>.rodata</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">SHF_ALLOC</td>
+</tr>
+<tr>
+<td>.shstrtab</td>
+<td style="text-align:left">SHT_STRTAB</td>
+<td style="text-align:center">none</td>
+</tr>
+<tr>
+<td>.strtab</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">如果ELF文件中有可装载的段须要用到该字符串表，那么该字符串表也将被装载到进程空间，则有SHF_ALLOC标志位</td>
+</tr>
+<tr>
+<td>.symtab</td>
+<td style="text-align:left">SHT_STRTAB</td>
+<td style="text-align:center">同字符串表</td>
+</tr>
+<tr>
+<td>.text</td>
+<td style="text-align:left">SHT_PROGBITS</td>
+<td style="text-align:center">SHF_ALLOC + SHF_EXECINSTR</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="段的链接信息（sh-link、sh-info）"><a href="#段的链接信息（sh-link、sh-info）" class="headerlink" title="段的链接信息（sh_link、sh_info）"></a>段的链接信息（sh_link、sh_info）</h5><p>如果段是和链接相关的，如重定位表、符号表等，那么这些段的含义如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>sh_type</th>
+<th style="text-align:left">sh_link</th>
+<th style="text-align:center">sh_info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHT_DYNAMIC</td>
+<td style="text-align:left">该段所使用的字符串表在段表中的下标</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td>SHT_HASH</td>
+<td style="text-align:left">该段所使用的符号表在段表中的下标</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td>SHT_REL</td>
+<td style="text-align:left">该段所使用的相应符号表在段表中的下标</td>
+<td style="text-align:center">该重定位表所作用的段在段表中的下标</td>
+</tr>
+<tr>
+<td>SHT_RELA</td>
+<td style="text-align:left">该段所使用的相应符号表在段表中的下标</td>
+<td style="text-align:center">该重定位表所作用的段在段表中的下标</td>
+</tr>
+<tr>
+<td>SHT_SYMTAB</td>
+<td style="text-align:left">操作系统相关</td>
+<td style="text-align:center">操作系统相关</td>
+</tr>
+<tr>
+<td>SHT_DYNSYM</td>
+<td style="text-align:left">操作系统相关</td>
+<td style="text-align:center">操作系统相关</td>
+</tr>
+<tr>
+<td>other</td>
+<td style="text-align:left">SHN_UNDEF</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-4-3-重定位表"><a href="#3-4-3-重定位表" class="headerlink" title="3.4.3 重定位表"></a>3.4.3 重定位表</h4><p>链接器在处理目标文件时，须要对目标文件的代码段和数据段中那些对绝对地址的引用的位置进行重定位。这些重定位的信息都记录在ELF文件的重定位表里面，对于每个须要重定位的代码段或数据段，都会有一个相应的重定位表。比如之前的示例中，”rel.text“就是针对“text”段的重定位表。而”data“段则没有对绝对地址的引用，所以没有针对”data“段的重定位表”rel. data“。</p>
+<h4 id="3-4-4-字符串表"><a href="#3-4-4-字符串表" class="headerlink" title="3.4.4 字符串表"></a>3.4.4 字符串表</h4><p>ELF文件中用到了很多字符串，比如段名、变量名等。因为字符串的长度往往是不定的，所以用固定的结构来表示它比较困难。一种很常见的做法是把字符串集中起来存放到一个表，然后使用字符串在表中的偏移来引用字符串。这样就诞生了字符串表这个结构。</p>
+<p>最常见的字符串表就是”.strtab“和”.shstrtab“。这两个字符串表分别为字符串表（String Table）和段表字符串表（Section Header String Table）。字符串表用来保存普通的字符串，如符号的名字；段表字符串表用来保存段表中用到的字符串，如段名。</p>
+<h3 id="3-5-链接的接口——符号"><a href="#3-5-链接的接口——符号" class="headerlink" title="3.5 链接的接口——符号"></a>3.5 链接的接口——符号</h3><p>在开发中，每个模块都会使用其他模块的功能，或者提供功能给其他模块引用，上述方法能成功工作是因为模块的函数或者变量都有自己独特的名字，避免了引用时发生混淆。在链接中这些函数和变量统称为符号，它们的名字就是符号名。</p>
+<p>整个链接过程就是基于符号才能够正确完成。所以链接中很关键的一环就是符号管理，每一个目标文件都会有一个相应的符号表（Symbol Table），这个表里面记录了目标文件中所用到的所有符号。每个定义的符号有个对应的值，叫做符号值( Symbol Value)，对于变量和函数来说，符号值就是它们的地址。除了函数和变量之外，还存在其他几种不常用到的符号。我们将符号表中所有的符号进行分类，它们有可能是下面这些类型中的一种：</p>
+<ul>
+<li>定义在本目标文件的全局符号。可以被其他目标文件引用</li>
+<li>在本目标文件中引用却在其他文件中定义的全局符号。这一般叫外部符号</li>
+<li>局部符号。如本地的局部变量，这类符号仅仅在编译单元内部可见，因为链接器仅仅关注模块间的关系，所以这些符号其实对链接器来说没有什么作用。不过调试器可以使用这些符号来分析程序或崩溃时的核心转储文件</li>
+<li>段名 、行号。这些符号用来提供一些辅助功能</li>
+</ul>
+<p>对于链接器来说，最重要的还是前面两种符号。</p>
+<h4 id="3-5-1-ELF-符号表结构"><a href="#3-5-1-ELF-符号表结构" class="headerlink" title="3.5.1 ELF 符号表结构"></a>3.5.1 ELF 符号表结构</h4><p>ELF文件的符号表往往是文件的”symtab“段。它的结构很简单，是一个Elf32_Sym结构（32位ELF文件）的数组，每个Elf32_Sym结构对应一个符号。这个数组的第一个元素，也就是下标0的元素为无效的”未定义“符号。Elf32_Sym的结构定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    Elf32_Word st_name;</span><br><span class="line">    Elf32_Addr st_value;</span><br><span class="line">    Elf32_Word st_size;</span><br><span class="line">		<span class="keyword">unsigned</span> <span class="keyword">char</span> st_info;</span><br><span class="line">  	<span class="keyword">unsigned</span> <span class="keyword">char</span> st_other; </span><br><span class="line">    Elf32_Half    st_shndx;</span><br><span class="line">&#125; Elf32_Sym;</span><br></pre></td></tr></table></figure>
+<p>Elf32_Sym的各个成员含义如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>st_name</td>
+<td>符号名，这个字段的值是该符号在字符串表中的下标</td>
+</tr>
+<tr>
+<td>st_value</td>
+<td>符号相对应的值。这个值跟符号有关，可能是一个绝对值，也可能是一个地址等，不同的符号，它所对应的值含义不同</td>
+</tr>
+<tr>
+<td>st_size</td>
+<td>符号大小。对于包含数据的符号，这个值是该数据类型的大小。如 double 类型的符号就是 8 个字节</td>
+</tr>
+<tr>
+<td>st_info</td>
+<td>符号类型和绑定信息</td>
+</tr>
+<tr>
+<td>st_other</td>
+<td>目前未用</td>
+</tr>
+<tr>
+<td>st_shndx</td>
+<td>符号所在的段</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="符号值（st-value）"><a href="#符号值（st-value）" class="headerlink" title="符号值（st_value）"></a>符号值（st_value）</h5><p>每个符号都有一个对应的值，如果符号是一个函数或者变量的定义，那么符号的值就是这个函数或者变量的地址，更准确地说应该分成下面几种情况区别对待：</p>
+<ul>
+<li>在目标文件中，如果符号不是”COMMON“类型的。st_value表示该符号在段中的偏移。即符号所对应的函数或者变量位于 st_shndx 指定的段，偏移 st_value 的位置。这也是目标文件中定义全局变量的符号最常见的情况</li>
+<li>如果符号是”COMMON“类型的。st_value表示该符号的对齐属性</li>
+<li>在可执行文件中，st_value表示符号的虚拟地址</li>
+</ul>
+<h5 id="符号类型和绑定信息（st-info）"><a href="#符号类型和绑定信息（st-info）" class="headerlink" title="符号类型和绑定信息（st_info）"></a>符号类型和绑定信息（st_info）</h5><p>该字段低 4 位表示符号的类型：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>宏定义名</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STB_LOCAL</td>
+<td>0</td>
+<td>局部符号，对目标文件外的编译单位不可见</td>
+</tr>
+<tr>
+<td>STB_GLOBAL</td>
+<td>1</td>
+<td>全局符号，对外部可见</td>
+</tr>
+<tr>
+<td>STB_WEAK</td>
+<td>2</td>
+<td>弱符号</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>高 28 位表示符号的绑定信息：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>宏定义名</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STB_NOTYPE</td>
+<td>0</td>
+<td>位置类型符号</td>
+</tr>
+<tr>
+<td>STB_OBJECT</td>
+<td>1</td>
+<td>数据对象，如变量、数组</td>
+</tr>
+<tr>
+<td>STB_FUNC</td>
+<td>2</td>
+<td>函数或者可执行代码</td>
+</tr>
+<tr>
+<td>STB_SECTION</td>
+<td>3</td>
+<td>该符号是一个段</td>
+</tr>
+<tr>
+<td>STB_FILE</td>
+<td>4</td>
+<td>一般是该目标文件所对应的源文件名</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="符号所在段（st-shndx）"><a href="#符号所在段（st-shndx）" class="headerlink" title="符号所在段（st_shndx）"></a>符号所在段（st_shndx）</h5><p>如果符号定义在本目标文件中，那这个成员表示符号所在的段在段表中的下标；如果不在本目标文件中，或者一些特殊符号 st_shndx 的值有些特殊：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>宏定义名</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHN_ABS</td>
+<td>0xFFF1</td>
+<td>表示该符号包含一个绝对值。如文件名的符号就是此类型</td>
+</tr>
+<tr>
+<td>SHN_COMMON</td>
+<td>0xFFF2</td>
+<td>表示该符号是一个”COMMON“块类型的符号。一般来说未初始化的全局符号定义就是该类型</td>
+</tr>
+<tr>
+<td>SHN_UNDEF</td>
+<td>0</td>
+<td>表示该符号未定义。这个符号表示该符号在本目标文件被引用，但是定义在其他目标文件中</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-5-2-特殊符号"><a href="#3-5-2-特殊符号" class="headerlink" title="3.5.2 特殊符号"></a>3.5.2 特殊符号</h4><p>  在用 ld作为链接器来链接产生可执行文件时，它会生成一些特殊的符号，这些符号并没有在源代码中定义，但是可以直接引用。一些典型的特殊符号如下：</p>
+<ul>
+<li><code>__FILE__</code> 编译单元对应的文件名</li>
+<li><p><code>__FUNCTION__</code> 符号所的函数</p>
+</li>
+<li><p><code>__executable_start</code> 程序起始地址</p>
+</li>
+<li><code>_end</code> 程序结束地址</li>
+</ul>
+<h4 id="3-5-3-符号修饰与函数签名"><a href="#3-5-3-符号修饰与函数签名" class="headerlink" title="3.5.3 符号修饰与函数签名"></a>3.5.3 符号修饰与函数签名</h4><p>在 C 语言之前已具备很多用汇编实现的程序库，这些库的符号名和对应的函数/变量名是一样的。为了避免名字冲突，Unix C 的编译器规定，C 语言源代码文件中的所有全局的变量和函数经过编译以后，相对应的符号名前加上下划线”_“，这个办法在当时解决了大部分的符号名冲突的问题。</p>
+<p>到后来 C++在设计时就考虑到了这一点，引入了命名空间特性，才彻底解决符号名冲突的问题。一组用来确定函数唯一性的关键信息，包括函数名、它的参数类型、它所在的类和名称空间及其他信息称之为函数签名( Function Signature)。函数签名用于识别不同的函数，C++使用特定的名称修饰方法，使得每个函数签名对应唯一一个修饰后的名称。</p>
+<p>生成函数签名以及根据函数签名生成对应的名称的方法可能每个编译器的实现都不一样，导致不同厂家的编译器产生的库不能相互链接，这也是 C++二进制难以兼容的原因之一。</p>
+<h4 id="3-5-4-extern-“C”"><a href="#3-5-4-extern-“C”" class="headerlink" title="3.5.4 extern “C”"></a>3.5.4 extern “C”</h4><p>有时C++要和 C 兼容，C++有一个用来声明或定义一个 C 的符号的<code>extern &quot;C&quot;</code>关键字</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">"c"</span> &#123;</span><br><span class="line">  <span class="keyword">int</span> var;    <span class="comment">//多行形式</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"c"</span> <span class="keyword">int</span> var;  <span class="comment">//单行形式</span></span><br></pre></td></tr></table></figure>
+<p>C++编译器会将在<code>extern &quot;C&quot;</code>的大括号内部的代码当做 C 语言代码来处理，此时 C++的名称修饰机制就不会起作用。</p>
+<h4 id="3-5-5-弱符号与强符号"><a href="#3-5-5-弱符号与强符号" class="headerlink" title="3.5.5 弱符号与强符号"></a>3.5.5 弱符号与强符号</h4><p>强弱符号是用来处理同一个符号在不同模块被重复定义的而出现的。对于 C / C++ 编译器来说，函数和以及初始化的全局变量是强符号，未初始化的全局变量是弱符号。不过强弱符号也可以用特定的修饰关键字单独指定。链接器会按照下列规则处理与选择被多次定义的全局符号：</p>
+<ul>
+<li>规则1：不允许强符号被多次定义；如果有多次重复定义，则链接器会报错</li>
+<li>规则2：如果一个符号在某个目标文件中是强符号，在其他文件中都是弱符号，那么选择强符号</li>
+<li>规则3：如果一个符号在所有目标文件中都是弱符号，那么选择其中占用空间最大的个。比如目标文件A定义全局变量global为int型，占4个字节；目标文件B定义global为double型，占8个字节，那么目标文件A和B链接后，符号global占8个字节(尽量不要使用多个不同类型的弱符号，否则容易导致很难发现的程序错误)</li>
+</ul>
+<h5 id="强引用和弱引用"><a href="#强引用和弱引用" class="headerlink" title="强引用和弱引用"></a>强引用和弱引用</h5><p>目前我们所看到的对外部目标文件的符号引用在目标文件被最终链接成可执行文件时，它们须要被正确决议，如果没有找到该符号的定义，链接器就会报符号未定义错误，这种被称为强引用。</p>
+<p>与之相对应还有一种弱引用，在处理弱引用时，如果该符号有定义，则链接器将该符号的引用决议；如果该符号未被定义，则链接器对于该引用不报错。链接器处理强引用和弱引用的过程几乎一样，只是对于未定义的弱引用，链接器不认为它是一个错误。一般对于未定义的弱引用，链接器默认其为0，或者是一个特殊的值，以便于程序代码能够识别。</p>
+<p>这种弱符号和弱引用对于库来说十分有用，比如库中定义的弱符号可以被用户定义的强符号所覆盖，从而使得程序可以使用自定义版本的库函数；或者程序可以对某些扩展功能模块的引用定义为弱引用，当我们将扩展模块与程序链接在一起时，功能模块就可以正常使用；如果我们去掉了某些功能模块，那么程序也可以正常链接，只是缺少了相应的功能，这使得程序的功能更加容易裁剪和组合。</p>
+<h4 id="3-5-6-调试信息"><a href="#3-5-6-调试信息" class="headerlink" title="3.5.6 调试信息"></a>3.5.6 调试信息</h4><p>目标文件里面还有可能保存的是调试信息。几乎所有现代的编译器都支持源代码级别的调试，比如我们可以在函数里面设置断点，可以监视变量变化，可以单步行进等，前提是编译器必须提前将源代码与目标代码之间的关系保存下来，比如目标代码中的地址对应源代码中的哪行、函数和变量的类型、结构体的定义、字符串保存到目标文件里面。</p>
+<p>现在的ELF文件采用一个叫DWARF（Debug With Arbitrary Record Format）的标准的调试信息格式来保存调试信息。值得注意的是，调试信息在目标文件中一般占据很大的空间，有时候甚至比代码和数据本身大好几倍，所以当代码完成开发时，往往要用 release 模式编译，把调试信息去掉。</p>
+<h2 id="4-静态链接"><a href="#4-静态链接" class="headerlink" title="4 静态链接"></a>4 静态链接</h2><h3 id="4-1-空间与地址分配"><a href="#4-1-空间与地址分配" class="headerlink" title="4.1 空间与地址分配"></a>4.1 空间与地址分配</h3><p>如两个静态文件 A 和 B 链接成 AB，链接器会采取”合并同类项“的方式把两个文件相同的段合并起来，如 A 的代码段和 B 的代码段合在一起，形成一个新的代码段。最后文件 AB 的大小是根据 A 和 B 的所有段的大小来确定的。</p>
+<p>合并的过程一般是两步：</p>
+<ol>
+<li>扫描全部输入文件，获得它们各个段的长度，并把所有符号以及符号引用收集起来，形成全局符号表</li>
+<li>用第 1 步获得到的信息，进行符号解析和重定位，调整文件中的各种引用地址</li>
+</ol>
+<h3 id="4-2-符号解析与重定位"><a href="#4-2-符号解析与重定位" class="headerlink" title="4.2 符号解析与重定位"></a>4.2 符号解析与重定位</h3><h4 id="4-2-1-重定位"><a href="#4-2-1-重定位" class="headerlink" title="4.2.1 重定位"></a>4.2.1 重定位</h4><p>符号在段内的位置是相对不变的，而且这个相对位置在编译时已经确定，所以只要段的起始地址确定，符号地址也随之确定。所以在多个段合并后，每个段的起始地址也确定下来，此时段内的符号地址能具体地计算出来。</p>
+<p>完成空间和地址的分配后，链接器就进入了符号解析和重定位的步骤，这也是静态链接的核心内容。</p>
+<h4 id="4-2-2-重定位表"><a href="#4-2-2-重定位表" class="headerlink" title="4.2.2 重定位表"></a>4.2.2 重定位表</h4><p>重定位的工作中最重要的一项数据结构就是重定位表，它用来保存如何修改相应的段里的内容的信息。每个要被重定位的地方叫一个重定位入口（Relocation Entry），重定位入口的偏移（Offset）表示该入口在要被重定位的段中的位置。</p>
+<p>对于 32 位的 x86 系列处理器来说，重定位表的结构是一个 Elf32_Rel 结构的数组：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  Elf32_Addr r_offset;</span><br><span class="line">  Elf32_Word r_info;</span><br><span class="line">&#125; Elf32_Rel</span><br></pre></td></tr></table></figure>
+<p>具体的字段解释如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r_offset</td>
+<td>对于可重定位文件来说，这个值是该重定位入口所要修正的位置的第一个字节相对于段起始的偏移；<br/>对于可执行文件或共享对象文件来说，这个值是该重定位入口所要修正的位置的第一个字节的虚拟地址</td>
+</tr>
+<tr>
+<td>r_info</td>
+<td>这个成员的低8位表示重定位入口的类型，高24位表示重定位入口的符号在符号表中的下标。对于可执行文件和共享目标文件来说，它们的重定位入口是动态链接类型的</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="4-2-3-符号解析"><a href="#4-2-3-符号解析" class="headerlink" title="4.2.3 符号解析"></a>4.2.3 符号解析</h4><p>平时在编写程序的时候常遇到的问题就是，链接时符号未定义。导致这个问题的原因很多，最常见的一般都是链接时缺少了某个库，或者输入目标文件路径不正确或符号的声明与定义不一样。</p>
+<p>通过前面指令重定位的介绍，现在可以更加深层次地理解为什么缺少符号的定义会导致链接错误。其实重定位过程也伴随着符号的解析过程，每个目标文件都可能定义一些符号，也可能引用到定义在其他目标文件的符号。重定位的过程中，每个重定位的入口都是对一个符号的引用，那么当链接器须要对某个符号的引用进行重定位时，它就要确定这个符号的目标地址。这时候链接器就会去查找由所有输入目标文件的符号表组成的全局符号表，找到相应的符号后进行重定位。</p>
+<p>在链接器扫描完所有的输入目标文件之后，理论上所有这些未定义的符号都应该能够在全局符号表中找到，否则链接器就报符号未定义错误。</p>
+<h4 id="4-2-4-指令修正方式"><a href="#4-2-4-指令修正方式" class="headerlink" title="4.2.4 指令修正方式"></a>4.2.4 指令修正方式</h4><p>32 位的 x86 处理器支持的寻址方式特别多，很多是从 16 位开始一直兼容上来的。到现在已经用的不多，现在主要的还是以下两种：</p>
+<ul>
+<li>绝对近址32位寻址</li>
+<li>相对近址32位寻址</li>
+</ul>
+<p>前面说到的 r_info 字段的 低 8 位表示重定位入口类型，具体如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>宏定义</th>
+<th>值</th>
+<th>重定位修正方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R_386_32</td>
+<td>1</td>
+<td>绝对寻址修正 S + A</td>
+</tr>
+<tr>
+<td>R_386_PC32</td>
+<td>2</td>
+<td>相对寻址修正 S + A - P</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A = 保存在被修正位置的值，这个位置由r_offset字段查询得到</p>
+<p>S = 符号的实际地址，由 r_info 的高 24 位指定的符号的实际地址</p>
+<p>P = 被修正的位置的第一个字节的虚拟地址</p>
+<h5 id="绝对寻址修正"><a href="#绝对寻址修正" class="headerlink" title="绝对寻址修正"></a>绝对寻址修正</h5><p>一般进行绝对寻址修正时，就是直接把符号的地址赋值到引用该符号的地方。所以一般引用处的 A 值都是 0</p>
+<h5 id="相对寻址修正"><a href="#相对寻址修正" class="headerlink" title="相对寻址修正"></a>相对寻址修正</h5><p>相对寻址需要计算符号引用的地方和符号相距的距离，所以上述的公式可以先简化成 S - P，这里 S 就是符号地址，P 就是引用符号的地址。</p>
+<p>x86 执行相对近调用指令时，后面参数的偏移量的计算公式是：目的地地址 - 源地址 - call指令长度。是不是看着很熟悉。和上面的 S - P 公式有点像了，这里就知道为什么要加上 A了。A 的值就是call 指令的长度，由编译器在编译时计算得出，在32位x86的CPU上A的值一般为-4</p>
+<h3 id="4-4-C-相关问题"><a href="#4-4-C-相关问题" class="headerlink" title="4.4 C++相关问题"></a>4.4 C++相关问题</h3><ul>
+<li>C++的模板、虚函数表、外部内联函数可能在各种实例中出现，会形成大量冗余代码。所以C++的编译器把每个模板的代码放在一个单独的段里，重复的模板只会产生一个段，通过这样的方法来去除冗余</li>
+<li>全局构造与析构代码放在.init和.finit 段，确保能在main之前前执行构造方法，在main之后执行析构方法</li>
+<li>C++的模板、多继承、命名空间等诸多特性导致符号的生成规则因素过多，ABI的兼容性难度很大</li>
+</ul>
+<h3 id="4-6-链接过程控制"><a href="#4-6-链接过程控制" class="headerlink" title="4.6 链接过程控制"></a>4.6 链接过程控制</h3><ul>
+<li>用命令行参数</li>
+<li>把链接指令放在目标文件里面</li>
+<li>用链接脚本控制链接过程</li>
+</ul>
+<h3 id="4-7-BFD-库"><a href="#4-7-BFD-库" class="headerlink" title="4.7 BFD 库"></a>4.7 BFD 库</h3><p>不同平台的目标文件格式千差万别，导致编译器和链接器很难处理不同平台的目标文件，特别是还具有跨平台特性的编译器来说，更是头疼。</p>
+<p>所以业界出现了BFD（Binary File Descriptor library）项目，它能把目标文件抽象成一个统一的模型。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/03/pod%20install%20%E7%89%B9%E5%88%AB%E6%85%A2%E7%9A%84%E7%BB%88%E6%9E%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="next" title="pod install 特别慢的终极解决方案😋">
+                <i class="fa fa-chevron-left"></i> pod install 特别慢的终极解决方案😋
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/09/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5/" rel="prev" title="程序员的自我修养：装载与动态链接">
+                程序员的自我修养：装载与动态链接 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-目标文件里有什么"><span class="nav-number">1.</span> <span class="nav-text">3 目标文件里有什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-目标文件格式"><span class="nav-number">1.1.</span> <span class="nav-text">3.1 目标文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-目标文件是什么样的"><span class="nav-number">1.2.</span> <span class="nav-text">3.2 目标文件是什么样的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-目标文件详解"><span class="nav-number">1.3.</span> <span class="nav-text">3.3 目标文件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-ELF文件结构描述"><span class="nav-number">1.4.</span> <span class="nav-text">3.4 ELF文件结构描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-1-文件头"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.4.1 文件头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-2-段表"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.4.2 段表</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#段的类型（sh-type）"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">段的类型（sh_type）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#段的标志位（sh-flag）"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">段的标志位（sh_flag）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#段的链接信息（sh-link、sh-info）"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">段的链接信息（sh_link、sh_info）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-3-重定位表"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.4.3 重定位表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-4-字符串表"><span class="nav-number">1.4.4.</span> <span class="nav-text">3.4.4 字符串表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-链接的接口——符号"><span class="nav-number">1.5.</span> <span class="nav-text">3.5 链接的接口——符号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-1-ELF-符号表结构"><span class="nav-number">1.5.1.</span> <span class="nav-text">3.5.1 ELF 符号表结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#符号值（st-value）"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">符号值（st_value）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#符号类型和绑定信息（st-info）"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">符号类型和绑定信息（st_info）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#符号所在段（st-shndx）"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">符号所在段（st_shndx）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-2-特殊符号"><span class="nav-number">1.5.2.</span> <span class="nav-text">3.5.2 特殊符号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-3-符号修饰与函数签名"><span class="nav-number">1.5.3.</span> <span class="nav-text">3.5.3 符号修饰与函数签名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-4-extern-“C”"><span class="nav-number">1.5.4.</span> <span class="nav-text">3.5.4 extern “C”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-5-弱符号与强符号"><span class="nav-number">1.5.5.</span> <span class="nav-text">3.5.5 弱符号与强符号</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#强引用和弱引用"><span class="nav-number">1.5.5.1.</span> <span class="nav-text">强引用和弱引用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-6-调试信息"><span class="nav-number">1.5.6.</span> <span class="nav-text">3.5.6 调试信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-静态链接"><span class="nav-number">2.</span> <span class="nav-text">4 静态链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-空间与地址分配"><span class="nav-number">2.1.</span> <span class="nav-text">4.1 空间与地址分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-符号解析与重定位"><span class="nav-number">2.2.</span> <span class="nav-text">4.2 符号解析与重定位</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1-重定位"><span class="nav-number">2.2.1.</span> <span class="nav-text">4.2.1 重定位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2-重定位表"><span class="nav-number">2.2.2.</span> <span class="nav-text">4.2.2 重定位表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3-符号解析"><span class="nav-number">2.2.3.</span> <span class="nav-text">4.2.3 符号解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-4-指令修正方式"><span class="nav-number">2.2.4.</span> <span class="nav-text">4.2.4 指令修正方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#绝对寻址修正"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">绝对寻址修正</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#相对寻址修正"><span class="nav-number">2.2.4.2.</span> <span class="nav-text">相对寻址修正</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-C-相关问题"><span class="nav-number">2.3.</span> <span class="nav-text">4.4 C++相关问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-链接过程控制"><span class="nav-number">2.4.</span> <span class="nav-text">4.6 链接过程控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-BFD-库"><span class="nav-number">2.5.</span> <span class="nav-text">4.7 BFD 库</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

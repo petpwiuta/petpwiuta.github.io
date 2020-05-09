@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="《程序员的自我修养》的读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员的自我修养：库与运行库">
+<meta property="og:url" content="http://petpwiuta.github.io/2020/05/09/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E5%BA%93%E4%B8%8E%E8%BF%90%E8%A1%8C%E5%BA%93/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="《程序员的自我修养》的读书笔记">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E5%BA%93%E4%B8%8E%E8%BF%90%E8%A1%8C%E5%BA%93/10.1-1.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E5%BA%93%E4%B8%8E%E8%BF%90%E8%A1%8C%E5%BA%93/10.2-1.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E5%BA%93%E4%B8%8E%E8%BF%90%E8%A1%8C%E5%BA%93/11.2.3-1.png">
+<meta property="article:published_time" content="2020-05-09T05:39:02.979Z">
+<meta property="article:modified_time" content="2020-05-09T05:39:02.979Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://petpwiuta.github.io/images/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E5%BA%93%E4%B8%8E%E8%BF%90%E8%A1%8C%E5%BA%93/10.1-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2020/05/09/程序员的自我修养：库与运行库/"/>
+
+
+
+
+
+  <title>程序员的自我修养：库与运行库 | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2020/05/09/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E5%BA%93%E4%B8%8E%E8%BF%90%E8%A1%8C%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">程序员的自我修养：库与运行库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-09T13:39:02+08:00">
+                2020-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">CS基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  《程序员的自我修养》的读书笔记
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="10-内存"><a href="#10-内存" class="headerlink" title="10 内存"></a>10 内存</h2><h3 id="10-1-程序和内存空间"><a href="#10-1-程序和内存空间" class="headerlink" title="10.1 程序和内存空间"></a>10.1 程序和内存空间</h3><p>现代的程序都使用的是虚拟内存空间，它的大小仅仅和CPU地址线宽度相关。虚拟内存空间和物理内存通过页目录和页表来实现映射。</p>
+<p>在虚拟空间中内存并不是所有的地方都可以随意使用，它被划分为了内核空间和用户空间。内核空间仅供操作系统使用，用户空间才是用户程序所使用的内存区域。在用户空间中，内存被分为了几个默认的区域：</p>
+<ul>
+<li>栈：用户维护函数调用时上下文参数，如参数和返回地址</li>
+<li>堆：用来提供给程序进行动态内存分配，像malloc函数分配的内存空间就在堆上</li>
+<li>可执行文件镜像：存储编译出来的可执行文件</li>
+<li>保留区：一部分不能被访问的空间区域的总称</li>
+<li>动态链接映射：如果程序是动态链接的，所需要的动态链接库会被映射到虚拟内存空间中</li>
+</ul>
+<p><img src="/images/程序员的自我修养：库与运行库/10.1-1.png" alt="10.1-1" style="zoom:50%;" /></p>
+<h3 id="10-2-栈和调用惯例"><a href="#10-2-栈和调用惯例" class="headerlink" title="10.2 栈和调用惯例"></a>10.2 栈和调用惯例</h3><h4 id="10-2-1-栈的结构"><a href="#10-2-1-栈的结构" class="headerlink" title="10.2.1 栈的结构"></a>10.2.1 栈的结构</h4><p>栈是一种后进先出的数据结构，它在编程语言中重要的作用之一就是跟踪函数的调用状态。函数可以层层嵌套调用，然后再一一返回，中间不会回到其他函数，也不会跳过中间的部分直接回到顶部函数，这都依赖于栈的存在。</p>
+<p>函数栈中保存了函数调用和返回所需要的信息，主要有以下几个部分：</p>
+<ul>
+<li>函数的返回地址和参数</li>
+<li>函数中声明的临时变量</li>
+<li>保存的上下文环境</li>
+</ul>
+<p>在i386处理器中，使用ebp和esp这两个寄存器来跟踪一个函数调用，esp始终指向栈顶部，也就是说同时指向了当前调用的函数的最顶部，ebp始终指向当前调用的函数的最底部。</p>
+<p><img src="/images/程序员的自我修养：库与运行库/10.2-1.png" alt="10.2-1" style="zoom:50%;" /></p>
+<p>函数调用后会在函数栈中建立起对应的栈帧，一个完整的函数调用帧是由调用者和被调用者双方建立起来的，具体步骤如下：</p>
+<ol>
+<li><p>调用者把所有或者部分参数压入栈中，如果有其他参数没有入栈，就用特定的寄存器传递参数</p>
+</li>
+<li><p>把当前指令的下一条指令压入栈中，作为返回地址</p>
+</li>
+<li><p>跳转到被调用的函数体执行具体逻辑 （2 和 3 这两个步骤是由汇编指令<code>call</code>来完成的，是一个原子操作）</p>
+<hr>
+</li>
+<li><p>被调用函数执行 <code>push ebp</code>把ebp压入栈中</p>
+</li>
+<li><p>被调用函数再执行<code>mov ebp,esp</code>把esp保存到ebp中</p>
+</li>
+</ol>
+<p>翻译成对应的汇编代码应该类似这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">int func(int arg) &#123;</span><br><span class="line">    push   ebp            ;这两行代码是每个函数体中都有的标准代码</span><br><span class="line">    mov    ebp,esp        ;用来维护栈帧结构，所有的函数默认应该都有前面着两行代码</span><br><span class="line"></span><br><span class="line">    sub    esp,局部变量所占空间  ;可选，用来保存函数的局部变量</span><br><span class="line">    push   xxx                ;可选，保存指定的寄存器</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span><br><span class="line">               ;调用其他函数的一般方法             ;;</span><br><span class="line">                                               ;;</span><br><span class="line">    ;如果函数中要调用其他函数，一般是                ;;</span><br><span class="line">    mov 寄存器,参数  ;如果是用寄存器传递参数         ;;</span><br><span class="line">    push           ;如果参数较多就用栈传递参数      ;;</span><br><span class="line">    call 函数名     ;call指令会保存下一条指令再跳转  ;;</span><br><span class="line">    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span><br><span class="line"></span><br><span class="line">    mov eax,0   ;通过寄存器返回函数结果 即 return 0;   </span><br><span class="line">                ;太大的对象需要通过更复杂的方式来返回</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="10-2-2-调用惯例"><a href="#10-2-2-调用惯例" class="headerlink" title="10.2.2 调用惯例"></a>10.2.2 调用惯例</h4><p>一个完整的栈帧需要调用者和被调用者共同构建，所以两者之间的协议就很重要了。调用者和被调用者之间的协议叫调用惯例，一般会规定下面几个方面的内容：</p>
+<ul>
+<li><p>函数参数的传递顺序和方式</p>
+<p>参数较少时可以通过寄存器来传递（寄存器速度快，效率也更高）; 但是参数较多时就要用栈，用栈传递时就要约定好参数时从左到右还是从右到左入栈，然后另一方再从栈中获取参数</p>
+</li>
+<li><p>栈的维护方式</p>
+<p>参数入栈以后，调用函数，函数完成以后参数已经不再需要，此时需要把参数从栈中弹出释放空间，这个步骤调用者或者被调用者都可以做，所以也需要约定好</p>
+</li>
+<li><p>名字修饰的算法</p>
+<p>从函数名到对应的符号名，这个算法由很多固定的约定，比如c语言的cdecl，就规定了把函数名前面添加一个下划线作为符号名。如foo函数，对应的符号名就是_foo</p>
+</li>
+</ul>
+<p>下面是几个典型的调用惯例：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">调用惯例</th>
+<th style="text-align:center">参数出栈方</th>
+<th style="text-align:center">参数传递</th>
+<th style="text-align:center">名字修饰</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">cdecl</td>
+<td style="text-align:center">函数调用方</td>
+<td style="text-align:center">从右到左压栈</td>
+<td style="text-align:center">下划线+函数名</td>
+</tr>
+<tr>
+<td style="text-align:left">stdcall</td>
+<td style="text-align:center">函数本身</td>
+<td style="text-align:center">从右到左压栈</td>
+<td style="text-align:center">下划线+函数名+@+参数字节数</td>
+</tr>
+<tr>
+<td style="text-align:left">fastcall</td>
+<td style="text-align:center">函数本身</td>
+<td style="text-align:center">头两个dword(4字节)用寄存器，其他用栈</td>
+<td style="text-align:center">@+函数名+@+参数字节数</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="10-2-3-函数返回值传递"><a href="#10-2-3-函数返回值传递" class="headerlink" title="10.2.3 函数返回值传递"></a>10.2.3 函数返回值传递</h4><p>对于返回5～8字节的对象来说，几乎所有的调用惯例都是采用eax和edx联合返回的方式，在64位平台上可能会用更多的寄存器。但是如果返回对象过于庞大，则会用下面的方法来传递参数（用C语言作为例子，其他语言可能细节不一样）：</p>
+<ul>
+<li>调用方在栈上开辟了一片空间，把这片空间作为返回对象的临时存放区域，这里称为temp</li>
+<li>把temp的地址作为隐藏参数传递给被调用函数</li>
+<li>被调用函数完成功能以后，把结果拷贝到temp空间中，并把temp空间的地址作为返回值返回（一般用eax寄存器来返回结果）</li>
+<li>回到主调函数后，主调函数再把eax寄存器指向的内容拷贝到真正的目的地内存中</li>
+</ul>
+<p>可以看到temp的空间被拷贝了两次，所以在c语言中，一般不会直接返回大字节数的对象，而是事先用malloc申请一块内存，然后再把内存指针传入函数中。这样就避免了多次内存读写。</p>
+<h3 id="10-3-堆与内存管理"><a href="#10-3-堆与内存管理" class="headerlink" title="10.3 堆与内存管理"></a>10.3 堆与内存管理</h3><h4 id="10-3-1-堆的结构"><a href="#10-3-1-堆的结构" class="headerlink" title="10.3.1 堆的结构"></a>10.3.1 堆的结构</h4><p>堆内存是应用程序中比较大的一块内存空间，也是使用起来最自由的内存空间（当然，也最容易出内存泄露的bug）。一般来讲，内存是操作系统管理的，可以用系统调用来直接申请内存，不过这样会频繁进行用户态/内核态的切换。</p>
+<p>所以一般语言的runtime在申请堆内存时，会向操作系统“批发”一大块内存，然后再“零售”给程序。当内存用完时会再向系统“进货”。c语言的runtime对内存管理就是基于上述的机制，而且runtime本身也会严格管理内存的分配，不会把同一块内存空间分配两次。这个强大高效的算法就是堆的分配算法。</p>
+<h4 id="10-3-2-Linux进程堆管理"><a href="#10-3-2-Linux进程堆管理" class="headerlink" title="10.3.2 Linux进程堆管理"></a>10.3.2 Linux进程堆管理</h4><p>Linux提供了两个系统调用来管理堆空间：一个是<code>brk()</code>，一个是<code>mmap()</code>。</p>
+<p>brk调用的实际作用起始是设置进程数据段的结束地址，可以扩大或者缩小。如果向高地址空间扩展，扩展出来的空间就可以用来做堆空间。</p>
+<p>mmap是用来向操作系统申请一段虚拟地址空间，这个空间可以映射到文件，也可以不映射。不映射到文件时，就称为匿名空间。匿名空间就可以拿来当堆空间。</p>
+<h4 id="10-3-4-堆分配算法"><a href="#10-3-4-堆分配算法" class="headerlink" title="10.3.4 堆分配算法"></a>10.3.4 堆分配算法</h4><ul>
+<li><p>空闲链表</p>
+<p>把堆上的空间块按照链表的方式穿起来。使用时，遍历链表查找满足条件的块</p>
+</li>
+<li><p>位图</p>
+<p>把堆空间分割成固定大小的块，然后用一个位图来记录分配情况</p>
+</li>
+<li><p>对像池</p>
+<p>如果分配对象的大小是固定的几个值，可以用对像池的办法来管理</p>
+</li>
+<li><p>多种算法结合</p>
+<p>实际环境中，分配算法一般是根据多种算法复合而成。对于glibc来说，小于64字节的是采用类似于对像池的方法; 而对于大于512字节的空间申请采用的是最佳适配算法; 对于64字节和512字节之间的，会采取上述方法中的最佳折中策略; 对于大于128KB的申请，它会使用mmap机制直接向操作系统申请空间</p>
+</li>
+</ul>
+<h2 id="11-运行库"><a href="#11-运行库" class="headerlink" title="11 运行库"></a>11 运行库</h2><h3 id="11-1-入口函数和程序初始化"><a href="#11-1-入口函数和程序初始化" class="headerlink" title="11.1 入口函数和程序初始化"></a>11.1 入口函数和程序初始化</h3><h4 id="11-1-1-程序从main开始吗"><a href="#11-1-1-程序从main开始吗" class="headerlink" title="11.1.1 程序从main开始吗"></a>11.1.1 程序从main开始吗</h4><p>操作系统装载C语言编写的程序以后，最先运行的并不是main函数，而是要进行一系列准备工作后才会调用main函数。</p>
+<p>执行这些准备工作的函数称为入口函数，它一般是运行库的一部分，一个典型的准备工作大致有下面几个方面：</p>
+<ul>
+<li>操作系统创建进程，把控制权交给程序的入口，这个入口一般是程序语言对应的运行库中的入口函数</li>
+<li>入口函数对运行库和程序运行环境进行初始化，包括堆、I/O、线程、全局变量构造等等</li>
+<li>入口函数初始化完成后，调用main函数，正式开始执行程序主体部分</li>
+<li>main函数执行完毕之后，返回到入口函数。入口函数进行收尾的清理工作，包括全局变量析构、堆销毁、关闭I/O等等。然后调用执行系统调用结束进程</li>
+</ul>
+<h4 id="11-1-2-入口函数如何实现"><a href="#11-1-2-入口函数如何实现" class="headerlink" title="11.1.2 入口函数如何实现"></a>11.1.2 入口函数如何实现</h4><h5 id="GLIBC入口函数"><a href="#GLIBC入口函数" class="headerlink" title="GLIBC入口函数"></a>GLIBC入口函数</h5><p>在Linux中glibc是C语言的运行库，它的程序入口为_start。它的大致逻辑用伪代码来表示类似于下面这样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> _start()</span><br><span class="line">&#123;</span><br><span class="line">  %ebp = <span class="number">0</span>;   <span class="comment">//ebp寄存器设置为0</span></span><br><span class="line">  <span class="keyword">int</span> argc = pop from <span class="built_in">stack</span></span><br><span class="line">  <span class="keyword">char</span>** argv = top of <span class="built_in">stack</span></span><br><span class="line">  __libc_start_main(main, argc, __libc_csu_init, __libc_csu_fini, edx, top of <span class="built_in">stack</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>_start函数主要是准备各种参数，再调用<code>__libc_start_main</code>函数来完成工作，它的函数如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __libc_start_main (</span><br><span class="line">  <span class="keyword">int</span> (*main) (<span class="keyword">int</span>, <span class="keyword">char</span> **, <span class="keyword">char</span> **),    <span class="comment">//main函数</span></span><br><span class="line">  <span class="keyword">int</span> argc,                               <span class="comment">//参数个数</span></span><br><span class="line">  <span class="keyword">char</span> * __unbounded *__unbounded ubp_av, <span class="comment">//参数列表和环境变量</span></span><br><span class="line">  __typeof (main) init,                   <span class="comment">//在main之前执行的逻辑</span></span><br><span class="line">  <span class="keyword">void</span> (*fini) (<span class="keyword">void</span>),                    <span class="comment">//在main之后执行的逻辑</span></span><br><span class="line">  <span class="keyword">void</span> (rtld_fini) (<span class="keyword">void</span>),                <span class="comment">//runtime loader fini，动态加载相关的收尾逻辑</span></span><br><span class="line">  <span class="keyword">void</span> * __unbounded stack_end            <span class="comment">//栈的最高地址</span></span><br><span class="line">) </span><br><span class="line">  </span><br><span class="line">&#123;<span class="comment">//函数主体</span></span><br><span class="line">  <span class="comment">// .........其他逻辑.........</span></span><br><span class="line">  __environ = ubp_ev;</span><br><span class="line">  __pthread_initialize_minimal();</span><br><span class="line">  __cxa_atexit(rtld_fini, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">  __libc_init_first(argc, argv, __environ);</span><br><span class="line">  __cxa_atexit(fini, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">  (*init)(argc, argv, __environ);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// .........其他逻辑.........</span></span><br><span class="line">  </span><br><span class="line">  result = main(argc, argv, __environ);</span><br><span class="line">  <span class="built_in">exit</span>(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可见在进行系列的初始化后，最终调用了main函数。</p>
+<h4 id="11-1-3-运行库与I-O"><a href="#11-1-3-运行库与I-O" class="headerlink" title="11.1.3 运行库与I/O"></a>11.1.3 运行库与I/O</h4><p>I/O是程序中非常重要的部分，包括文件、管道、网络、命令行、信号等都属于I/O的范围。而文件则是实际使用最多的I/O实体。</p>
+<p>在Linux里，文件操作是通过文件描述符（File Descriptor）进行的。设置文件描述符的原因是防止用户随意读写操作系统内核的文件对象。无论是Linux还是Windows，文件描述符总是和内核的文件对象相关联的，内核可以通过文件描述符来计算出内核的文件对象的地址，但这个能力并不对普通用户开放。</p>
+<p>在Linux中，值为0、1、2的fd分别代表标准输入、标准输出和标准错误输出。在程序中打开文件得到的fd从3开始增长。fd具体是什么呢？在内核中，每一个进程都有一个私有的“打开文件表”，这个表是一个指针数组，每一个元素都指向一个内核的打开文件对象。而fd就是这个表的下标。当用户打开一个文件时，内核会在内部生成一个打开文件对象，并在这个表里找到一个空项，让这一项指向生成的打开文件对象，并返回这一项的下标作为fd。由于这个表处于内核，并且用户无法访问到，因此用户即使拥有fd，也无法得到打开文件对象的地址，只能够通过系统提供的函数来操作。 </p>
+<h3 id="11-2-C-C-运行库"><a href="#11-2-C-C-运行库" class="headerlink" title="11.2 C/C++运行库"></a>11.2 C/C++运行库</h3><h5 id="11-2-1-C语言运行库"><a href="#11-2-1-C语言运行库" class="headerlink" title="11.2.1 C语言运行库"></a>11.2.1 C语言运行库</h5><p>任何一个C语言程序，它背后都有一套庞大的代码来进行支撑，以使得该程序能够正常运行。这套代码至少包括入口函数，以及所依赖的函数所构成的函数集合。以及各种标准库函数的实现。这样的代码集合称为运行时库（Runtime Library）。</p>
+<p>一个C语言运行库大致包含了如下功能：</p>
+<ul>
+<li>启动与退出：包括入口函数及入口函数所依赖的其他函数等</li>
+<li>标准函数：由C语言标准规定的C语言标准库所拥有的函数实现</li>
+<li>堆：堆的封装和实现</li>
+<li>语言实现：语言中一些特殊功能的实现</li>
+<li>调试：实现调试功能</li>
+</ul>
+<h5 id="11-2-2-C语言标准库"><a href="#11-2-2-C语言标准库" class="headerlink" title="11.2.2 C语言标准库"></a>11.2.2 C语言标准库</h5><p>C语言现在有了统一的标准，即ANSI C，它的标准库由24个C头文件组成，例举几个常见的：</p>
+<ul>
+<li>标准输入输出、文件操作：stdio.h </li>
+<li>字符操作：ctype.h</li>
+<li>字符串操作：string.h</li>
+<li>数学函数：math.h</li>
+<li>资源管理、格式转换：stdlib.h</li>
+<li>时间/日期：time.h</li>
+<li>断言：assert.h</li>
+<li>常数定义：limits.h / float.h</li>
+<li>变长参数：stdarg.h</li>
+<li>非局部跳转：setjmp.h</li>
+</ul>
+<h6 id="变长参数"><a href="#变长参数" class="headerlink" title="变长参数"></a>变长参数</h6><p>变长参数是C语言的特殊参数形式。如下面的函数声明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>printf函数除了第一个参数类型为const char*外，后面可以追加任意数量和类型的参数。这主要得益于C语言默认的cdecl调用约定，即由函数调用者负责参数的压栈和出栈。</p>
+<h6 id="非局部跳转"><a href="#非局部跳转" class="headerlink" title="非局部跳转"></a>非局部跳转</h6><p>C语言中有goto语句，不过goto只能在函数内跳转，想要跳转到其他函数内部执行就不行了。不过C语言提供了setjmp.h库，来提供非局部跳转的能力。</p>
+<h5 id="11-2-3-glibc与MSVC-CRT"><a href="#11-2-3-glibc与MSVC-CRT" class="headerlink" title="11.2.3 glibc与MSVC CRT"></a>11.2.3 glibc与MSVC CRT</h5><p>glibc的标准静态库位于<code>/usr/lib/libc.a</code> 除了标准库外，它还有几个辅助程序运行的运行库，它们是<code>/usr/lib/crt1.o</code> 、 <code>/usr/lib/crti.o</code> 、 <code>/usr/lib/crtn.o</code> 这几个文件在程序加载中有着关键的作用。</p>
+<p><code>crt1.o</code> 里面包含的就是程序的入口函数<code>_start</code>，由它负责调用<code>__libc_start_main</code> 初始化libc并且调用main函数进入真正的程序主体。</p>
+<p>由于C++的出现和ELF文件的改进，出现了必须在main函数之前执行的全局/静态对象构造和必须在main之后执行的全局/静态对象析构，为了满足这一要求，运行库在每个目标文件中引入两个与初始化相关的段<code>.init</code>和<code>.finit</code> ，运行库会保证所有位于这两个段中的代码会先于/后于main函数执行。</p>
+<p>为了方便运行库调用，最终输出文件中的<code>.init</code>和 <code>.finit</code>两个段实际上分别包含的是<code>_init()</code>和 <code>_finit()</code>这两个函数。<code>crti.o</code>和 <code>crtn.o</code> 这两个目标文件中包含的代码实际上是<code>_init()</code>和 <code>_finit()</code>这两个函数的开始和结束部分，当这两个文件和其他目标文件按照顺序链接起来后，刚好形成两个完整的函数<code>_init()</code>和 <code>_finit()</code>。</p>
+<p>在最终链接完成之后，输出的目标文件中的<code>.init</code> 段只包含了一个函数<code>_init()</code>，这个函数的开始部分来自于<code>crti.o</code> 的<code>.init</code> 段，结束部分来自于<code>crtn.o</code> 的<code>.init</code> 段。为了保证最终输出文件中<code>.init</code> 和<code>.finit</code> 的正确顺序，我们必须保证在链接时，<code>crti. o</code> 必须在用户目标文件和系统库之前，而<code>crtn.o</code> 必须在用户目标文件和系统库之后。所以链接器的输入文件顺序一般是:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ld crt1.o crti.o [user_objects] [system_libraries] crtn.o</span></span><br></pre></td></tr></table></figure>
+<p>由于<code>crt1.o</code> 不包含<code>.init</code> 段和<code>.finit</code> 段，所以不会影响最终生成<code>.init</code> 和<code>.fnit</code> 段时的顺序。输出文件中的<code>.init</code> 段看上去应该如图所示（对于<code>.finit</code> 来说也是一样）：</p>
+<p><img src="/images/程序员的自我修养：库与运行库/11.2.3-1.png" alt="10.1-1" style="zoom:50%;" /></p>
+<blockquote>
+<p>在默认情况下，链接器会将<code>libc</code>、<code>crt1.o</code>等这些CRT和启动文件与程序的模块链接起来。但是有些时候我们可能不需要这些文件，或者希望使用自己的<code>libc</code>和<code>crt1.o</code>等启动文件，以替代系统默认的文件，这种情况在嵌入式系统或操作系统內核编译的时候很常见。GCC提高了两个参数<code>-nostartfile</code>和<code>-nostdlib</code>，分别用来取消默认的启动文件和C语言运行库。</p>
+</blockquote>
+<p>由于<code>.init</code>和 <code>.finit</code>段的特殊性（在main之前/后，执行），所以除了用来进行全局对象构造和析构外。一些监控用户程序性能或者调试工具经常用它来进行一些初始化和反初始化的工作。不过这些代码不能使用普通函数，因为函数的返回指令会使<code>_init()</code>函数提前返回，所以必须使用汇编代码，不能让编译器产生<code>ret</code>指令。</p>
+<h2 id="12-系统调用与API"><a href="#12-系统调用与API" class="headerlink" title="12 系统调用与API"></a>12 系统调用与API</h2><h3 id="12-1-系统调用介绍"><a href="#12-1-系统调用介绍" class="headerlink" title="12.1 系统调用介绍"></a>12.1 系统调用介绍</h3><h4 id="12-1-1-什么是系统调用"><a href="#12-1-1-什么是系统调用" class="headerlink" title="12.1.1 什么是系统调用"></a>12.1.1 什么是系统调用</h4><p>操作系统的主要功能就是把硬件资源抽象化，抽象化以后的硬件资源通过特定的接口给应用程序使用，而最基础的接口就是系统调用。系统调用最主要的特点就是调用以后系统会切换到内核态执行固定的内核代码，这个过程主要是通过中断来实现的。在Linux中使用0x80号中断作为系统调用入口，而在Windows里系统调用中断号是0x2E 。</p>
+<p>系统调用涵盖的功能很广，有程序运行所必需的支持，例如创建/退出进程和线程、进程内存管理，也有对系统资源的访问，例如文件、网络、进程间通信、硬件设备的访问，也可能有对图形界面的操作支持，例如 Windows下的GUI机制。</p>
+<p>不过对于Windows来说，系统调用实际上不是它和程序最低层的接口，它的最底层接口是API。设计API层的目的是为了消除不同硬件和内核版本的差异，这也造就了Windows恐怖的兼容性。</p>
+<h4 id="12-1-2-Linux系统调用"><a href="#12-1-2-Linux系统调用" class="headerlink" title="12.1.2 Linux系统调用"></a>12.1.2 Linux系统调用</h4><p>在x86系列的CPU中，系统调用由0x80中断完成，参数通过寄存器传递。EAX寄存器用于表示系统调用的接口号，比如EAX=1表示退出进程(exit); EAX=2表示创建进程(fork); EAX=3表示读取文件或IO(read); EAX=4表示写文件或lO( write)等，每个系统调用都对应于内核源代码中的一个函数。它们都是以“sys_”开头的，比如exit调用对应内核中的sys_exit函数。当系统调用返回时，EAX又作为调用结果的返回值。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">EAX</th>
+<th style="text-align:center">名字</th>
+<th style="text-align:left">C语言定义</th>
+<th style="text-align:center">含义</th>
+<th style="text-align:left">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">exit</td>
+<td style="text-align:left">void _exit(int status);</td>
+<td style="text-align:center">退出进程</td>
+<td style="text-align:left">EBX：退出码</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">fork</td>
+<td style="text-align:left">pid_ fork(void);</td>
+<td style="text-align:center">复制进程</td>
+<td style="text-align:left">EBX：复制参数</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">read</td>
+<td style="text-align:left">ssize_t read(int fd, void *buf, size_t count);</td>
+<td style="text-align:center">读文件</td>
+<td style="text-align:left">EBX：文件handler</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">write</td>
+<td style="text-align:left">ssize_t write(int fd, const void *buf, size_t count);</td>
+<td style="text-align:center">写文件</td>
+<td style="text-align:left">EBX：文件handler</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>这些系统调用可以直接用汇编代码根据中断定义来直接调用，也可以用C语言封装的接口来调用。不过直接虽然可以直接使用系统调用，但系统调用的功能太过原始。如直接用open()、read()、close()，来处理文件的话，需要自己处理缓冲、按行读取等功能，所以不如直接用glibc提供的fopen()、fread()、fclose()等现成的功能。</p>
+<h4 id="12-1-3-系统调用的弊端"><a href="#12-1-3-系统调用的弊端" class="headerlink" title="12.1.3 系统调用的弊端"></a>12.1.3 系统调用的弊端</h4><p>系统调用的弊端是太过于底层，使用不方便。另外一点就是和系统实现相关，移植性不好。</p>
+<p>所以人们在系统调用之上增加了跨平台的语言运行库，如C语言的运行库。使用C语言的fread函数时，在不同的系统中可能调用底层系统调用是不一样的，但向语言层面提供统一的接口，这样就可以只写一份代码然后运行在不同的系统上。</p>
+<h3 id="12-2-系统调用原理"><a href="#12-2-系统调用原理" class="headerlink" title="12.2 系统调用原理"></a>12.2 系统调用原理</h3><h4 id="12-2-1-特权级与中断"><a href="#12-2-1-特权级与中断" class="headerlink" title="12.2.1 特权级与中断"></a>12.2.1 特权级与中断</h4><p>在x86系列的CPU上，系统代码和应用代码具有不同的特权等级。系统代码在最高级别运行，可以操作所有的硬件。应用代码在进行硬件操作时，就会使用中断来调用系统提供的功能来间接使用硬件。</p>
+<p>中断是类似于高级语言中的回调方法，操作系统内核在启动后会注册一系列的中断处理方法，当应用程序调用中断时，会传入对应的终端号，来指明使用哪一个中断方法。</p>
+<h4 id="12-2-2-基于int的Linux的经典系统调用实现"><a href="#12-2-2-基于int的Linux的经典系统调用实现" class="headerlink" title="12.2.2 基于int的Linux的经典系统调用实现"></a>12.2.2 基于int的Linux的经典系统调用实现</h4><h5 id="触发中断"><a href="#触发中断" class="headerlink" title="触发中断"></a>触发中断</h5><p>汇编指令<code>int</code>会触发CPU去查找事先准备好的中断表，用约定好的寄存器参数来调用中断处理函数。</p>
+<h5 id="切换堆栈"><a href="#切换堆栈" class="headerlink" title="切换堆栈"></a>切换堆栈</h5><p>当实际执行中断表中的函数前，CPU必须先保存现场，以便完成任务后继续执行用户程序。这里保存现场主要就是保存栈寄存器（ESP、EBP等），以及当前的执行代码用到的寄存器（CS、EIP、EFLAG 等等）。保存好现场后，就会切换到内核态，所谓的切换起始就是向这些寄存器写入新的值，这些新值指向内核代码和内核内存区域。最后再执行中断处理函数。</p>
+<h5 id="中断处理函数"><a href="#中断处理函数" class="headerlink" title="中断处理函数"></a>中断处理函数</h5><p>中断处理函数是操作系统内核预先设定好的，如任务切换，CPU执行异常处理等，它们在执行固定的逻辑后，把用户程序的执行环境恢复。最后再执行<code>iret</code>指令把执行流返回到之前发生中断的地方。</p>
+<h4 id="12-2-3-Linux的新型系统调用机制"><a href="#12-2-3-Linux的新型系统调用机制" class="headerlink" title="12.2.3 Linux的新型系统调用机制"></a>12.2.3 Linux的新型系统调用机制</h4><p>Linux2.5版本后开始支持新的系统调用指令，即<code>sysenter</code>和<code>sysexit</code>，这两个指令和<code>int</code> 功能类似，但是把<code>int</code>执行的绝大部分逻辑都用硬件电路来实现了，这样性能要比<code>int</code>指令更好（int是一个通用的中断机制，并不是仅仅只能做内核/用户态的切换）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/09/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%EF%BC%9A%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5/" rel="next" title="程序员的自我修养：装载与动态链接">
+                <i class="fa fa-chevron-left"></i> 程序员的自我修养：装载与动态链接
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/09/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E7%AC%94%E8%AE%B0/" rel="prev" title="汇编语言笔记">
+                汇编语言笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-内存"><span class="nav-number">1.</span> <span class="nav-text">10 内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-1-程序和内存空间"><span class="nav-number">1.1.</span> <span class="nav-text">10.1 程序和内存空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-2-栈和调用惯例"><span class="nav-number">1.2.</span> <span class="nav-text">10.2 栈和调用惯例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#10-2-1-栈的结构"><span class="nav-number">1.2.1.</span> <span class="nav-text">10.2.1 栈的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-2-2-调用惯例"><span class="nav-number">1.2.2.</span> <span class="nav-text">10.2.2 调用惯例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-2-3-函数返回值传递"><span class="nav-number">1.2.3.</span> <span class="nav-text">10.2.3 函数返回值传递</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-3-堆与内存管理"><span class="nav-number">1.3.</span> <span class="nav-text">10.3 堆与内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#10-3-1-堆的结构"><span class="nav-number">1.3.1.</span> <span class="nav-text">10.3.1 堆的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-3-2-Linux进程堆管理"><span class="nav-number">1.3.2.</span> <span class="nav-text">10.3.2 Linux进程堆管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-3-4-堆分配算法"><span class="nav-number">1.3.3.</span> <span class="nav-text">10.3.4 堆分配算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-运行库"><span class="nav-number">2.</span> <span class="nav-text">11 运行库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#11-1-入口函数和程序初始化"><span class="nav-number">2.1.</span> <span class="nav-text">11.1 入口函数和程序初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#11-1-1-程序从main开始吗"><span class="nav-number">2.1.1.</span> <span class="nav-text">11.1.1 程序从main开始吗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-1-2-入口函数如何实现"><span class="nav-number">2.1.2.</span> <span class="nav-text">11.1.2 入口函数如何实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#GLIBC入口函数"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">GLIBC入口函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-1-3-运行库与I-O"><span class="nav-number">2.1.3.</span> <span class="nav-text">11.1.3 运行库与I&#x2F;O</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-2-C-C-运行库"><span class="nav-number">2.2.</span> <span class="nav-text">11.2 C&#x2F;C++运行库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#11-2-1-C语言运行库"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">11.2.1 C语言运行库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-2-2-C语言标准库"><span class="nav-number">2.2.0.2.</span> <span class="nav-text">11.2.2 C语言标准库</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#变长参数"><span class="nav-number">2.2.0.2.1.</span> <span class="nav-text">变长参数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#非局部跳转"><span class="nav-number">2.2.0.2.2.</span> <span class="nav-text">非局部跳转</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-2-3-glibc与MSVC-CRT"><span class="nav-number">2.2.0.3.</span> <span class="nav-text">11.2.3 glibc与MSVC CRT</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-系统调用与API"><span class="nav-number">3.</span> <span class="nav-text">12 系统调用与API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-系统调用介绍"><span class="nav-number">3.1.</span> <span class="nav-text">12.1 系统调用介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#12-1-1-什么是系统调用"><span class="nav-number">3.1.1.</span> <span class="nav-text">12.1.1 什么是系统调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-1-2-Linux系统调用"><span class="nav-number">3.1.2.</span> <span class="nav-text">12.1.2 Linux系统调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-1-3-系统调用的弊端"><span class="nav-number">3.1.3.</span> <span class="nav-text">12.1.3 系统调用的弊端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-系统调用原理"><span class="nav-number">3.2.</span> <span class="nav-text">12.2 系统调用原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#12-2-1-特权级与中断"><span class="nav-number">3.2.1.</span> <span class="nav-text">12.2.1 特权级与中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-2-2-基于int的Linux的经典系统调用实现"><span class="nav-number">3.2.2.</span> <span class="nav-text">12.2.2 基于int的Linux的经典系统调用实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#触发中断"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">触发中断</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#切换堆栈"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">切换堆栈</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#中断处理函数"><span class="nav-number">3.2.2.3.</span> <span class="nav-text">中断处理函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-2-3-Linux的新型系统调用机制"><span class="nav-number">3.2.3.</span> <span class="nav-text">12.2.3 Linux的新型系统调用机制</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

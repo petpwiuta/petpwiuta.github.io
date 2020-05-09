@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="iOS被坑血泪史">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS worst practice">
+<meta property="og:url" content="http://petpwiuta.github.io/2016/10/08/iOS-worst-practice/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="iOS被坑血泪史">
+<meta property="article:published_time" content="2016-10-08T07:17:42.000Z">
+<meta property="article:modified_time" content="2016-10-08T07:17:42.000Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2016/10/08/iOS-worst-practice/"/>
+
+
+
+
+
+  <title>iOS worst practice | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2016/10/08/iOS-worst-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS worst practice</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-08T15:17:42+08:00">
+                2016-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  iOS被坑血泪史
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="iOS-worst-practice"><a href="#iOS-worst-practice" class="headerlink" title="iOS worst practice"></a>iOS worst practice</h1><p>最近在重构公司的项目，随着对项目的逐渐深入（被坑的次数越来越多），被各路大牛的神迹所折服，以至于感觉这些人是不是我们竞争对手派来的卧底。这些坑可以算是iOS worst practice了，在这里总结一下。</p>
+<h2 id="命名的问题"><a href="#命名的问题" class="headerlink" title="命名的问题"></a>命名的问题</h2><p>给变量或者类以及方法起名能从一个侧面反映出一个程序员的水平以及项目的管理情况。在这个项目中，方法名、变量名和类名都没有统一，而且相关业务命名也没有规定。比如用于引导页面就有<code>TechView</code>、<code>IntroduceView</code>、<code>guideView</code>等，而下面的这些命名真是让人看了直接让人凌乱：</p>
+<p>方法：</p>
+<p><code>-(void)preTeachView2KnowActionWithNoShow:(UIButton *)sender</code></p>
+<p><code>-(void)setTableView_Up_Down_NoHidden</code></p>
+<p>变量：</p>
+<p><code>#define fuckvalue   -34</code></p>
+<p><code>_info_tmp</code></p>
+<p><code>NSString *fuck1;</code></p>
+<p><code>NSString *fuck2;</code></p>
+<p>类:</p>
+<p><code>@interface New_AdPersonViewController : New_PersonDetailViewController</code></p>
+<h2 id="代码复用性"><a href="#代码复用性" class="headerlink" title="代码复用性"></a>代码复用性</h2><p>不会Ctrl-C/Ctrl-V的程序员不是好程序员，不过有些人玩得太high了，看你的工程中到处都是下面这些代码的时候你是什么感觉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</span><br><span class="line">&#123;</span><br><span class="line">    UITableViewCell *cell;</span><br><span class="line">    if(indexPath.section &#x3D;&#x3D; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:0];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 1)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:1];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 2)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:2];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 3)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:3];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 4)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:4];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 5)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:5];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 6)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:6];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 7)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:7];</span><br><span class="line">    &#125;</span><br><span class="line">    else if(indexPath.section &#x3D;&#x3D; 8)</span><br><span class="line">    &#123;</span><br><span class="line">        cell &#x3D; [self setTableView:tableView CellForRowAtIndexPath:indexPath section:8];</span><br><span class="line">    &#125;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> NSString *sectionTitle &#x3D; @&quot;&quot;;</span><br><span class="line">        if(indexPath.section &#x3D;&#x3D; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:0];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 1)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:1];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 2)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:2];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 3)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:3];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 4)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:4];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 5)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:5];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 6)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:6];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 7)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:7];</span><br><span class="line">        &#125;</span><br><span class="line">        else if(indexPath.section &#x3D;&#x3D; 8)</span><br><span class="line">        &#123;</span><br><span class="line">            sectionTitle &#x3D; [_arraySections objectAtIndex:8];</span><br><span class="line">         &#125;</span><br></pre></td></tr></table></figure>
+<p>反正我看了第一感觉是，我x、原来以前公司发工资是按代码行数算钱的······</p>
+<h2 id="没有面向对象思想"><a href="#没有面向对象思想" class="headerlink" title="没有面向对象思想"></a>没有面向对象思想</h2><ul>
+<li>在ViewController基类中放一些特定的业务逻辑，然后所有的子类中都有一堆阴魂不散的代码</li>
+<li>该封装的不封装，完成同样功能的函数在每个用到的地方都一个copy，一旦逻辑变动，改起来真心好爽</li>
+<li>不该封装的乱封装，封装的暴露的方法完全不知道是干什么的，想要类运行还必须先设定某些它所依赖的全局变量</li>
+</ul>
+<h2 id="滥用单例、通知"><a href="#滥用单例、通知" class="headerlink" title="滥用单例、通知"></a>滥用单例、通知</h2><p>实际上工程里面单例就一个，不过单例对象把所有的活都干，所以可以理解为整个工程的架构，都是面向过程的，全部模块水乳交融、浑然一体。用户数据保存靠这个单例、具体页面数据设置靠靠这个单例、应用行为配置靠靠这个单例······然后大部分的ViewController想要正常工作都得提前把所需的数据在这个单例中配置好，想想都佩服那些大神的记忆力；对于滥用通知的后果和单例一样，当你见到一个控制器中有一二十条通知齐刷刷地写在初始化方法里的时候有什么感觉。想想都有点小激动，你确定不是在逗我？</p>
+<h2 id="各种脑洞大开的实现"><a href="#各种脑洞大开的实现" class="headerlink" title="各种脑洞大开的实现"></a>各种脑洞大开的实现</h2><p>看见一个函数名叫做addRequestQueue的时候你会有什么反应，大部分人肯定想着肯定会是生成请求实例、有请求队列对它们进行管理······对此我只能说大神的想象力是无穷的，这个addRequestQueue是用<strong>递归的方式</strong>发送的请求，在网络请求成功或失败的闭包中会再次调用自己发送请求，这时候我终于明白这个队列是在哪儿了。</p>
+<p>类似的例子还有很多，一次次的被大神的想象力所折服！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/08/cell-height-calc-with-autolayout/" rel="next" title="项目中Cell自动计算行高的实践">
+                <i class="fa fa-chevron-left"></i> 项目中Cell自动计算行高的实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/08/What's-New-in-iOS10/" rel="prev" title="What's New in iOS">
+                What's New in iOS <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-worst-practice"><span class="nav-number">1.</span> <span class="nav-text">iOS worst practice</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#命名的问题"><span class="nav-number">1.1.</span> <span class="nav-text">命名的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码复用性"><span class="nav-number">1.2.</span> <span class="nav-text">代码复用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#没有面向对象思想"><span class="nav-number">1.3.</span> <span class="nav-text">没有面向对象思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滥用单例、通知"><span class="nav-number">1.4.</span> <span class="nav-text">滥用单例、通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#各种脑洞大开的实现"><span class="nav-number">1.5.</span> <span class="nav-text">各种脑洞大开的实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

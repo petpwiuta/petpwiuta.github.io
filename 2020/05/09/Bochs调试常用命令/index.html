@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Bochs调试常用命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bochs调试常用命令">
+<meta property="og:url" content="http://petpwiuta.github.io/2020/05/09/Bochs%E8%B0%83%E8%AF%95%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="Bochs调试常用命令">
+<meta property="article:published_time" content="2020-05-09T06:20:39.153Z">
+<meta property="article:modified_time" content="2020-05-09T06:28:15.958Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2020/05/09/Bochs调试常用命令/"/>
+
+
+
+
+
+  <title>Bochs调试常用命令 | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2020/05/09/Bochs%E8%B0%83%E8%AF%95%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Bochs调试常用命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-09T14:20:39+08:00">
+                2020-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">CS基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  Bochs调试常用命令
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h3><p>Bochs是做系统开发常用的虚拟机，调试系统内核很方便。</p>
+<p>安装Bochs一般是从源码编译再安装，而调试器属于可选功能，所以在编译Bochs时需要使用<code>--enable-debugger</code>和<code>--enable-disasm</code>标志开启调试模块。例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure --enable-debugger --enable-disasm #后面还有其他选项，此处省略</span><br></pre></td></tr></table></figure>
+<p>需要注意调试功能在 <strong>2.5.4</strong> 版本以上才有，确保下载的代码是高于这个版本的。</p>
+<h3 id="2-常见的几个使用场景"><a href="#2-常见的几个使用场景" class="headerlink" title="2 常见的几个使用场景"></a>2 常见的几个使用场景</h3><h4 id="2-1-查看寄存器"><a href="#2-1-查看寄存器" class="headerlink" title="2.1 查看寄存器"></a>2.1 查看寄存器</h4><p>汇编代码中，调试最常用的功能就是查看寄存器的内容。</p>
+<ul>
+<li><code>r</code>  查看通用寄存器</li>
+<li><code>sreg</code>  查看段寄存器</li>
+<li><code>creg</code>  查看控制寄存器</li>
+<li><code>dreg</code>  查看调试寄存器</li>
+<li><code>info cpu</code>  查看所有寄存器</li>
+</ul>
+<h4 id="2-2-查找和定位代码"><a href="#2-2-查找和定位代码" class="headerlink" title="2.2 查找和定位代码"></a>2.2 查找和定位代码</h4><p>次常用的肯定是控制代码执行流程，代码执行到想要仔细跟踪的那个部分。</p>
+<ul>
+<li><p><code>b 内存地址</code>  设置断点</p>
+<p>如<code>b 0x7c00</code>，在线性地址0x7c00处设置断点。</p>
+</li>
+<li><p><code>info break</code>  查看设置过的断点</p>
+</li>
+<li><p><code>c</code>  继续执行代码</p>
+<p>一般设置断点后，想让代码恢复执行，就使用这个命令。</p>
+</li>
+<li><p><code>s</code>  单步执行</p>
+<p>单步执行一行代码，和高级语言调试器的step into按钮类似，遇到函数调用会跳转到函数内部执行。单步执行命令也可以带参数，指定执行的次数，如 <code>s 100</code> 就是单步执行100次。</p>
+</li>
+<li><p><code>n</code>  执行下一行</p>
+<p>它和单步执行类似，单步执行遇到循环和函数时会跳转到内部，而n命令会执行完循环和函数，类似于step over，这样在遇到大量的循环或者较长的函数时，可以用n命令来执行到下一行。</p>
+<p>n命令能跳转到下一行是因为loop或者call执行有明显的结束标记（前者通过cx寄存器，后者通ret指令），如果遇到用jmp语句写的循环这种情况，没有明显结束标记的，可以用下面的u命令反汇编代码的地址，找到循环的下一行指令的地址，然后给该地址加一个断点就能达到同样的效果。</p>
+</li>
+<li><p><code>u</code>  反汇编代码</p>
+<p>直接使用u命令会反汇编当前执行的指令，它可以加参数， <code>u /反汇编数量 起始地址</code> ，如 <code>u /20 0x7c00</code> 就是从0x7c00处开始，反汇编20条指令，如果没有起始地址就是从当前地址开始。</p>
+<p>它还可以反汇编一个范围的代码，<code>u 起始地址 结束地址</code> ，如<code>u 0x7c00 0x7cff</code> 就是反汇编0x7c00到0x7cff的代码。</p>
+</li>
+</ul>
+<h4 id="2-3-查看内存"><a href="#2-3-查看内存" class="headerlink" title="2.3 查看内存"></a>2.3 查看内存</h4><ul>
+<li><code>x /nuf 地址</code>  查看线性地址处的内存内容。</li>
+<li><code>xp /nuf 地址</code>  查看物理地址处的内存内容。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">n 指定要显示的内存单元的数量</span><br><span class="line">u 显示的内存单元的大小，如下参数之一</span><br><span class="line">	b 单个字节</span><br><span class="line">	h 半个字(2 字节)</span><br><span class="line">	w 一个字(4 字节)</span><br><span class="line">f 打印的格式。如下类型之一：</span><br><span class="line">	x 按照十六进制形式打印</span><br><span class="line">	d 按照十进制形式打印</span><br><span class="line">	u 以无符号的10进制打印</span><br><span class="line">	o 按照八进制形式打印</span><br><span class="line">	t 按照二进制行是打印</span><br></pre></td></tr></table></figure>
+<h4 id="2-4-Tips"><a href="#2-4-Tips" class="headerlink" title="2.4 Tips"></a>2.4 Tips</h4><p>Bochs还有一个比较有用的设计就是，当你输入指令后，直接按回车键（Enter Key）会重复上一次的命令。比如上一个命令是单步执行<code>s</code>，此时直接按回车键就相当于<code>s</code>的功能。</p>
+<h3 id="3-调试指令手册"><a href="#3-调试指令手册" class="headerlink" title="3 调试指令手册"></a>3 调试指令手册</h3><h4 id="3-1-执行控制"><a href="#3-1-执行控制" class="headerlink" title="3.1 执行控制"></a>3.1 执行控制</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>c</code> / <code>cont</code> / <code>continue</code></td>
+<td style="text-align:left">继续执行</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s</code> / <code>step</code> [count]</td>
+<td style="text-align:left">执行count条指令，如果不指定参数，默认值为1</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s</code> / <code>step</code> [cpu] [count]</td>
+<td style="text-align:left">对于对称多处理器结构模拟，在cpu上执行count条指令，count的默认值为1</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s</code> / <code>step</code> all [count]</td>
+<td style="text-align:left">对于对称多处理器结构模拟，所有cpu上都执行count条指令，count的默认值为1</td>
+</tr>
+<tr>
+<td style="text-align:left">Ctrl-C</td>
+<td style="text-align:left">停止执行，返回到命令行提示符</td>
+</tr>
+<tr>
+<td style="text-align:left">Ctrl-D</td>
+<td style="text-align:left">如果在空行上执行，则退出调试器</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>q</code> / <code>quit</code> / <code>exit</code></td>
+<td style="text-align:left">退出调试器，继续执行</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-2-断点操作"><a href="#3-2-断点操作" class="headerlink" title="3.2 断点操作"></a>3.2 断点操作</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">① <code>vbreak</code> / <code>vb</code> segment:offset</td>
+<td style="text-align:left">设置虚拟地址指令断点，segment和offset指段地址和段内偏移量</td>
+</tr>
+<tr>
+<td style="text-align:left">② <code>lbreak</code> / <code>lb</code> addr</td>
+<td style="text-align:left">在线性地址指令上设置断点</td>
+</tr>
+<tr>
+<td style="text-align:left">③ <code>pbreak</code> / <code>bp</code> [*] addr</td>
+<td style="text-align:left">在物理地址上设置断点</td>
+</tr>
+<tr>
+<td style="text-align:left">④ <code>break</code> / <code>b</code> [*] addr</td>
+<td style="text-align:left">同上。  * 符号是兼容GDB命令，为可选参数</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>info break</code></td>
+<td style="text-align:left">显示当前所有断点状态</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>bpe</code> n</td>
+<td style="text-align:left">开启断点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>bpd</code> n</td>
+<td style="text-align:left">关闭断点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>delete</code> / <code>del</code> / <code>d</code>  n</td>
+<td style="text-align:left">删除断点</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>注意</strong>：① ② ③ ④ 的命令都可以设置条件，即都可以变成条件断点。具体做法是在命令之后添加<code>if condition</code> ，如<code>vbreak 0x008:0x001 if &quot;条件表达式&quot;</code></p>
+<h4 id="3-3-内存观察点"><a href="#3-3-内存观察点" class="headerlink" title="3.3 内存观察点"></a>3.3 内存观察点</h4><p>内存观察点类似于内存的监听器，当指定地址的内存产生读取或者写入事件时，会产生中断。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>watch read/r</code> addr</td>
+<td style="text-align:left">在物理地址addr上插入读观察点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>watch write/w</code> addr</td>
+<td style="text-align:left">在物理地址addr上插入一个写观察点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>watch</code></td>
+<td style="text-align:left">显示当前内存观察点的状态</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>watch stop</code></td>
+<td style="text-align:left">当遇到观察点时，停止模拟执行（默认）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>watch continue</code></td>
+<td style="text-align:left">在遇到观察点时，不要停止模拟执行</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>unwatch</code> addr</td>
+<td style="text-align:left">移除指定物理地址上的观察点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>unwatch</code></td>
+<td style="text-align:left">移除所有的观察点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>trace-mem on/off</code></td>
+<td style="text-align:left">开启/关闭 内存访问追踪</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-4-内存操作"><a href="#3-4-内存操作" class="headerlink" title="3.4 内存操作"></a>3.4 内存操作</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>x</code> /nuf addr</td>
+<td style="text-align:left">在线性地址addr处检查内存内容，nuf的解释在前面列出</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>xp</code> /nuf addr</td>
+<td style="text-align:left">在物理地址 addr处查看内存内容，nuf的解释在前面列出</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>setpmem</code> addr datasize value</td>
+<td style="text-align:left">在内存位置addr处设置datasize大小内存，值为 value</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>writemem</code> filepath addr datasize</td>
+<td style="text-align:left">从线性地addr处dump出datasize个字节到文件filepath中</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>crc</code> addr1 addr2</td>
+<td style="text-align:left">显示物理地址范围 addr1到addr2之间内容的 CRC值</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-5-查看信息"><a href="#3-5-查看信息" class="headerlink" title="3.5 查看信息"></a>3.5 查看信息</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>r</code> / <code>reg</code> / <code>regs</code> / <code>registers</code></td>
+<td style="text-align:left">查看通用寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>fp</code> / <code>fpu</code></td>
+<td style="text-align:left">查看FPU寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>mmx</code></td>
+<td style="text-align:left">查看MMX寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sse</code> / <code>xmm</code></td>
+<td style="text-align:left">查看SSE寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ymm</code></td>
+<td style="text-align:left">查看AVX寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sreg</code> / <code>dreg</code> / <code>creg</code></td>
+<td style="text-align:left">查看 段 / 调试 / 控制 寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>info</code> cpu</td>
+<td style="text-align:left">查看所有寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>info</code> eflags</td>
+<td style="text-align:left">查看标志寄存器内容</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>info</code> break</td>
+<td style="text-align:left">显示当前所有断点状态</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>info</code> tab</td>
+<td style="text-align:left">显示分页地址转换</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>info</code> device</td>
+<td style="text-align:left">显示指定设备的状态</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-6-寄存器操作"><a href="#3-6-寄存器操作" class="headerlink" title="3.6 寄存器操作"></a>3.6 寄存器操作</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>set</code> reg = expr</td>
+<td style="text-align:left">修改reg寄存器值为expr</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>注意</strong>：只能修改通用寄存器和指令寄存器。不能够修改标志寄存器，段寄存器，浮点寄存器和SIMD寄存器。</p>
+<h4 id="3-7-反汇编"><a href="#3-7-反汇编" class="headerlink" title="3.7 反汇编"></a>3.7 反汇编</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>u</code> addr1 addr2</td>
+<td style="text-align:left">在给定的线性地址范围内反汇编指令，包含start处指令，不包含end处指令</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>u</code> switch-mode</td>
+<td style="text-align:left">在Intel和 AT&amp;T两种汇编风格之间切换</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>u</code> size = n</td>
+<td style="text-align:left">设定反汇编命令的位数，使用0，16，32。值0意思是使用当前的CS段寄存器，默认值是0</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>set u on</code></td>
+<td style="text-align:left">每次停止执行时就自动反汇编当前的指令</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>set u off</code></td>
+<td style="text-align:left">和上一条相反，不自动反汇编</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-8-指令跟踪"><a href="#3-8-指令跟踪" class="headerlink" title="3.8 指令跟踪"></a>3.8 指令跟踪</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>trace on</code></td>
+<td style="text-align:left">反汇编每一条执行的指令。引起异常的指令都没有真正执行，因此也不会被跟踪</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>trace off</code></td>
+<td style="text-align:left">关闭指令跟踪功能</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-9-指令编程环境"><a href="#3-9-指令编程环境" class="headerlink" title="3.9 指令编程环境"></a>3.9 指令编程环境</h4><p>Bochs的instrument功能，提供了运行时的各种钩子函数。它也是可选功能，在编译安装时需要开启<code>--enable-instrumentation</code>选项指定。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configure [...] --enable-instrumentation</span><br><span class="line">./configure [...] --enable-instrumentation="instrument/stubs"</span><br></pre></td></tr></table></figure>
+<p>自定义的代码要创建一个独立的目录，例如”instrument/myinstrument”，将”instrument/stubs”目录拷贝进去，然后使用如下的指令设定：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure [...] --enable-instrumentation="instrument/myinstrument"</span><br></pre></td></tr></table></figure>
+<p>指令命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">instrument [command]    用[command]调用BX_INSTR_DEBUG_CMD指令回调</span><br></pre></td></tr></table></figure>
+<h4 id="3-10-show指令"><a href="#3-10-show指令" class="headerlink" title="3.10 show指令"></a>3.10 show指令</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>show</code></td>
+<td style="text-align:left">打印当前的符号信息显示模式</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> mode</td>
+<td style="text-align:left">当处理器切换模式时打印</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> int</td>
+<td style="text-align:left">当产生中断时打印</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> call</td>
+<td style="text-align:left">当产生调用时打印</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> ret</td>
+<td style="text-align:left">当函数返回时打印</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> off</td>
+<td style="text-align:left">关闭打印</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> dbg-all</td>
+<td style="text-align:left">开启所有显示标志</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show</code> dbg-none</td>
+<td style="text-align:left">关闭所有显示标志</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="3-11-其他命令"><a href="#3-11-其他命令" class="headerlink" title="3.11 其他命令"></a>3.11 其他命令</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>ptime</code></td>
+<td style="text-align:left">打印当前的时间（从开始模拟到现在的ticks）</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sb</code> delta</td>
+<td style="text-align:left">在未来执行中插入一个时间断点delta。delta是一个64位的整数，跟着字母”L”，例如1000L</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sba</code> time</td>
+<td style="text-align:left">在时间time处插入一个时间断点 。time 同上面的delta</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>print-stack</code> [num]</td>
+<td style="text-align:left">打印栈顶端的num个字</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>modebp</code></td>
+<td style="text-align:left">触发CPU模式转换断点</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ldsym</code> [global] filename [offset]</td>
+<td style="text-align:left">从文件filename加载符号。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="4-参考"><a href="#4-参考" class="headerlink" title="4 参考"></a>4 参考</h3><ul>
+<li><a href="http://bochs.sourceforge.net/doc/docbook/user/internal-debugger.html#AEN4220" target="_blank" rel="noopener">8.14. Using Bochs internal debugger</a></li>
+<li><a href="http://bochs.sourceforge.net/cgi-bin/lxr/source/instrument/instrumentation.txt" target="_blank" rel="noopener">bochs/instrument</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/09/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E4%B8%AD%E6%96%AD%E5%92%8C%E8%BF%9B%E7%A8%8B/" rel="next" title="进入32位保护模式（四）：中断和进程">
+                <i class="fa fa-chevron-left"></i> 进入32位保护模式（四）：中断和进程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-常见的几个使用场景"><span class="nav-number">2.</span> <span class="nav-text">2 常见的几个使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-查看寄存器"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 查看寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-查找和定位代码"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 查找和定位代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-查看内存"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 查看内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-Tips"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 Tips</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-调试指令手册"><span class="nav-number">3.</span> <span class="nav-text">3 调试指令手册</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-执行控制"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 执行控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-断点操作"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 断点操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-内存观察点"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 内存观察点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-内存操作"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 内存操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-查看信息"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 查看信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-寄存器操作"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 寄存器操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-反汇编"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 反汇编</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-指令跟踪"><span class="nav-number">3.8.</span> <span class="nav-text">3.8 指令跟踪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-9-指令编程环境"><span class="nav-number">3.9.</span> <span class="nav-text">3.9 指令编程环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-10-show指令"><span class="nav-number">3.10.</span> <span class="nav-text">3.10 show指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-11-其他命令"><span class="nav-number">3.11.</span> <span class="nav-text">3.11 其他命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-参考"><span class="nav-number">4.</span> <span class="nav-text">4 参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

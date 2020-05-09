@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="操作系统启动模块之 GDTR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进入32位保护模式（一）：加载GDTR">
+<meta property="og:url" content="http://petpwiuta.github.io/2020/05/09/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%8A%A0%E8%BD%BDGDTR/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="操作系统启动模块之 GDTR">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%8A%A0%E8%BD%BDGDTR/32Mode_1_1.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%8A%A0%E8%BD%BDGDTR/32Mode_1_2.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%8A%A0%E8%BD%BDGDTR/32Model_1_3.png">
+<meta property="article:published_time" content="2020-05-09T06:12:22.436Z">
+<meta property="article:modified_time" content="2020-05-09T06:12:22.436Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://petpwiuta.github.io/images/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%8A%A0%E8%BD%BDGDTR/32Mode_1_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2020/05/09/进入32位保护模式（一）：加载GDTR/"/>
+
+
+
+
+
+  <title>进入32位保护模式（一）：加载GDTR | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2020/05/09/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%8A%A0%E8%BD%BDGDTR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">进入32位保护模式（一）：加载GDTR</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-09T14:12:22+08:00">
+                2020-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">CS基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  操作系统启动模块之 GDTR
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>实时模式下运行中的程序能访问所有内存，随着计算机上运行的程序越来越多，这个设计的风险也越来越大。保护模式在这个背景下应运而生。保护模式的主要思路就是把内存划分成若干个段，操作系统给这些段表明权限以及相关属性，在访问时就会根据权限和属性给予放行或拦截。</p>
+<h3 id="GDT"><a href="#GDT" class="headerlink" title="GDT"></a>GDT</h3><p>上面说了保护模式的思路就是把内存分段，这个分段的列表就是GDT（global descriptor table）全局描述符表。这个表中每个表项长度为8个字节，所以，表长度=表项数*8，这个表的起始地址存放在cpu的一个专用寄存器上，称之为GDTR（global descriptor table register）全局描述符表寄存器。</p>
+<p>GDTR有48位，其中32位用来存放在内存中的起始地址，16位用来存放表的长度（其实严谨的来说是长度偏移量，因为在数值上总是等于表的大小减一，和c语言中的数组下标类似）。</p>
+<p><img src="/images/进入32位保护模式（一）：加载GDTR/32Mode_1_1.png" alt="32Mode_1_1" style="zoom:50%;" /></p>
+<p>上面已经提到了，表项的大小是固定的8个字节，所以要想访问任何一项，只需要用GDTR中保存的基地址+表项*8就得到该项的地址，和通过下标对数组进行随机访问一样。</p>
+<p>下面就来介绍GDT表项结构。</p>
+<p>GDT表项的主要由3部分组成：内存区域的起始地址、内存区域的大小、内存区域的属性。</p>
+<p><img src="/images/进入32位保护模式（一）：加载GDTR/32Mode_1_2.png" alt="32Mode_1_2" style="zoom:50%;" /></p>
+<p>由图可见GDT表项中的段基地址，段界限，还有属性等位置并不是连续分布的，这主要是考虑和前代CPU兼容性而妥协的设计。下面简单介绍以下各个部分的结构：</p>
+<ul>
+<li>段基地址：就是该描述符所定义的段的起始地址，总共由32位组成</li>
+<li>段长度（界限）：段的长度，数值等于长度的大小减一，总共由20位组成</li>
+<li>G（Granularity）：粒度位，用于解释段长度的单位。当为0时，长度单位就是字节，当为1时，长度单位就是4KB，这时，一个段的最大长度能达到4GB</li>
+<li>D / B：用来做16位保护模式兼容的位，现在使用的非常少了。如果不做16位兼容，设置成1就行</li>
+<li>L：64位代码段标志</li>
+<li>AVL（Available）：通常给操作系统使用，处理器很少使用</li>
+<li>P（Presence）：用来保存段是否存在于内存中的标志，有时候没有内存时，操作系统会把部分不常用的段换入磁盘中，此位就会置为0。反过来如果从磁盘换入内存，此位就会置为1。</li>
+<li>DPL（Descriptor Privilege Level）：用来表示段的特权级别，从大到小分别是，0，1，2，3</li>
+<li>S：用来表示段的类型，0为系统段，1为代码/数据段</li>
+<li>TYPE：用来表述段的子权限，有点类似于Linux用RWX位来表文件的读写执行权限。对于数据段4位分别是XEWA，表示执行/扩展/写/访问权限，对于代码段4位分别是XCRA，表示执行/特权依从/可读/访问权限</li>
+</ul>
+<h3 id="GDT的加载"><a href="#GDT的加载" class="headerlink" title="GDT的加载"></a>GDT的加载</h3><p>根据上述的规格设置好GDT的数据后，就需要把GDT表的地址和长度加载到系统的GDTR寄存器中，这个步骤有一个专用的指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lgdt m48  ;该指令的操作数是一个48位的内存区域</span><br></pre></td></tr></table></figure>
+<p>指令的参数的48位对应的是GDT表的位置和长度，前（低）16位是长度，后面（高）32位是GDT的地址。</p>
+<p>设置好GDT以后，需要进入保护模式才会生效，x86 cpu是通过设置CR0寄存器的PE位为1来进入保护模式。PE（Protection Enable）位在CR0的第1位（位0）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov eax,cr0   ;读取cr0</span><br><span class="line">or eax,1      ;把第0位置为1</span><br><span class="line">mov cr0,eax   ;设置cr0</span><br><span class="line"></span><br><span class="line">jmp dword 0x0008:flush  ;进入32位模式后，要用jmp指令清空流水线(流水线里残留着16位的指令，会有问题)</span><br></pre></td></tr></table></figure>
+<h3 id="保护模式下的段访问"><a href="#保护模式下的段访问" class="headerlink" title="保护模式下的段访问"></a>保护模式下的段访问</h3><h4 id="段选择子"><a href="#段选择子" class="headerlink" title="段选择子"></a>段选择子</h4><p>保护模式下访问内存地址还是需要通过段寄存器来进行，不过此时段寄存器的内容由以前的段地址变成了段选择子。所谓的段选择子最主要的就是要访问的段在GDT表中的序号。</p>
+<p><img src="/images/进入32位保护模式（一）：加载GDTR/32Model_1_3.png" alt="32Model_1_3" style="zoom:50%;" /></p>
+<p>段选择子的最主要的信息就是描述符索引，也就是段在段表内的序号。还有就是TI（table indicator）位，用来表示段在哪个表中，TI=0时，表示在GDT表中，TI=1时，表示在LDT（Local Descriptor Table）中。以及RPL（Require Privilege Level）位，请求特权级别，用来表示给出当前选择子的程序的特权级别。</p>
+<h4 id="选择子检查"><a href="#选择子检查" class="headerlink" title="选择子检查"></a>选择子检查</h4><p>进入保护模式以后，用段选择子设置段寄存器时，段寄存器会缓存这个选择子，下次再用同样的选择子访问时，就会直接用缓存的数据。而且在访问的过程中也同时对选择子的权限，以及访问范围进行检查，如果权限不够或者超出范围就会产生异常。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h4 id="第21条地址线A20"><a href="#第21条地址线A20" class="headerlink" title="第21条地址线A20"></a>第21条地址线A20</h4><p>8086时代都是20条地址线，最大地址为0xFFFFF，再加一就会变成0x100000。但因为只有20位，所以最高位被丢弃，此时又会回到最低位地址0x00000。当年很多特性都依赖于这个特性，后来在80286后地址线扩展到24位，这个特性就不管用了。为了兼容以前的旧代码，IBM在键盘控制器的x60端口放置了一个控制门，后来因为太繁琐在80486以后直接添加了A20M#引脚。</p>
+<p>A20m#引脚通过0x92端口控制，它的第7～2位没有使用，第0位是INIT_NOW，它从0变成1时，会重启CPU。而第1位就是用来控制A20的开关，当它为1时会启动第21条地址线。在INIT_NOW被从0设置成1时，会自动把A20位设置成1，所以现在一般不用手动来设置。这个历史遗留问题还是挺有趣的，理解x86的各种历史包袱的过程也不啻于看一部计算机发展史啊。</p>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><ul>
+<li><p><a href="https://en.wikipedia.org/wiki/Global_Descriptor_Table" target="_blank" rel="noopener">GDT wiki</a></p>
+</li>
+<li><p>《x86汇编语言-从实时模式到保护模式》，page 189</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/09/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E7%AC%94%E8%AE%B0/" rel="next" title="汇编语言笔记">
+                <i class="fa fa-chevron-left"></i> 汇编语言笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/09/%E8%BF%9B%E5%85%A532%E4%BD%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E4%BB%BB%E5%8A%A1%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E5%88%AB/" rel="prev" title="进入32位保护模式（二）：任务和特权级别">
+                进入32位保护模式（二）：任务和特权级别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#GDT"><span class="nav-number">1.</span> <span class="nav-text">GDT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GDT的加载"><span class="nav-number">2.</span> <span class="nav-text">GDT的加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保护模式下的段访问"><span class="nav-number">3.</span> <span class="nav-text">保护模式下的段访问</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#段选择子"><span class="nav-number">3.1.</span> <span class="nav-text">段选择子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选择子检查"><span class="nav-number">3.2.</span> <span class="nav-text">选择子检查</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第21条地址线A20"><span class="nav-number">4.1.</span> <span class="nav-text">第21条地址线A20</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">5.</span> <span class="nav-text">引用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

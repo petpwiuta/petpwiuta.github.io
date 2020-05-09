@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Ney的技术博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="iOS事件处理过程笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS事件处理">
+<meta property="og:url" content="http://petpwiuta.github.io/2016/10/07/event_chain/index.html">
+<meta property="og:site_name" content="Ney的技术博客">
+<meta property="og:description" content="iOS事件处理过程笔记">
+<meta property="og:image" content="http://petpwiuta.github.io/images/event_chain/gesture_state.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/event_chain/gestureandview.png">
+<meta property="og:image" content="http://petpwiuta.github.io/2016/10/07/event_chain/view_inheritance.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/event_chain/event_route.png">
+<meta property="og:image" content="http://petpwiuta.github.io/images/event_chain/app_event_structure.png">
+<meta property="article:published_time" content="2016-10-07T11:28:39.000Z">
+<meta property="article:modified_time" content="2020-05-09T08:50:43.485Z">
+<meta property="article:author" content="Ney">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://petpwiuta.github.io/images/event_chain/gesture_state.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://petpwiuta.github.io/2016/10/07/event_chain/"/>
+
+
+
+
+
+  <title>iOS事件处理 | Ney的技术博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ney的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learning，sharing，improving</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://petpwiuta.github.io/2016/10/07/event_chain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ney">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ney的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS事件处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-07T19:28:39+08:00">
+                2016-10-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  iOS事件处理过程笔记
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="定义手势识别如何交互"><a href="#定义手势识别如何交互" class="headerlink" title="定义手势识别如何交互"></a>定义手势识别如何交互</h2><h3 id="1-有限状态机中手势识别的操作"><a href="#1-有限状态机中手势识别的操作" class="headerlink" title="1 有限状态机中手势识别的操作"></a>1 有限状态机中手势识别的操作</h3><p> 手势识别器使用状态机来进行控制。识别器所在的每一个状态，都会依照它们所符合的特定条件向另一个可能的状态进行跳转。如图1-3所示。所有的状态识别器都会有一个初始的状态(UIGestureRecognizerStatePossible)，然后分析其所接收到的所有的多点触摸序列，分析的过程中，对应的手势要么成功识别、要么失败。如果失败，那就意味着将手势识别器的状态转向“失败状态(UIGestureRecognizerStateFailed)”。</p>
+<p><img src="/images/event_chain/gesture_state.png" alt="gesture_state" style="zoom:50%;" /></p>
+<p>对于非持续手势识别，如果是被成功，就会从某个状态转向“已识别(UIGestureRecognizerStateRecognized)”状态 ，也就意味着手势分析的整个过程完成。 </p>
+<p>对于持续手势识别，一旦识别成功，则会首先从某个状态转向“已开始(UIGestureRecognizerStateBegan)”状态 ，当手势持续操作并运动时就会由“已开始”转到 “已变化(UIGestureRecognizerStateChanged)”  并持续由该状态继续，当用户的最后一根手指离开视图进行操作，就会转入“已结束(UIGestureRecognizerStateEnded)”状态，该手 势识别过程也就结束。需要注意的是，结束状态也是手势识别状态的一个。</p>
+<p>如果连续手势识别发现用户的手势不符合预期的模式，其状态也可能从“已改变”状态，转到“已取消(UIGestureRecognizerStateCancelled)”状态。手势识别器的状态每次发生改变，都会向其目标对象发送一条消息，除非其状态转为“失败”或者“取消”。如此，非持续的手势识别器的状态发生转变，就发送一个消息给其目标对象，连续手势识别器，则会连续发送许多消息。</p>
+<p>当手势识别器状态转为“已识别”或者“已结束”时，其状态值就会被重置到初始状态， 转向初始状态时不会触发消息发送。</p>
+<h3 id="2-与其他手势识别器进行交互"><a href="#2-与其他手势识别器进行交互" class="headerlink" title="2 与其他手势识别器进行交互"></a>2 与其他手势识别器进行交互</h3><p>视图对象可以添加多个手势识别器， <code>gestureRecognizers</code> 属性可以查看所有的手势识别器。 <code>addGestureRecognizer</code> 和 <code>removeGestureRecognizer</code> 方法能增加或删除手势识别器。</p>
+<p>视图添加多个手势识别器时，默认情况下，手势识别器的相应顺序是随机的，所以每次用户的手势触摸操作都可能由不同的手势识别器接受到并被处理。所以需要有指定手势识别器优先级的能力。开发者就想要修改此“默认”设定，已达到以下目的:</p>
+<p>• 指定某个识别器优先于另一个识别器，来接收并处理用户的触摸操作。 </p>
+<p>• 让两个识别器同时进行操作处理。</p>
+<p>• 阻止某个手势识别器对某个触摸操作进行分析。</p>
+<p>使用被 UIGestureRecognizer 子类覆盖重写的的类方法、代理方法以及成员函数方法来改 变这些行为操作。</p>
+<h4 id="2-1-申明两个识别器的特定顺序"><a href="#2-1-申明两个识别器的特定顺序" class="headerlink" title="2.1 申明两个识别器的特定顺序"></a>2.1 申明两个识别器的特定顺序</h4><p>假设开发者想要识别用户的“滑动(swipe)”和“平移(pan)”手势，而这两个手势需要触发两个不同的消息。默认情况下，当用户进“滑动(swipe)”操作时，这个手势会被默认识别为“平移(pan)”。这是因为“滑动”手势操作在被系统识别为“滑动”手势(持久的连续性手势)之前，系统进行判断时，发现其操作行为完全符合“平移”(这是一个瞬发的非持续手势)操作的所有必要的属性条件，所以系统就将其识别为“平移”。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123; </span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    [<span class="keyword">self</span>.panRecognizer requireGestureRecognizerToFail:<span class="keyword">self</span>.swipeRecognizer]; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用该方法的手势识别器 A 会给接收消息的手势识别器 B 发送一个消息，指定一定是 B 对手势操作识别失败之后，A 才开始接收并分析用户的手势操作。在 A 进行等待 B 对用户的手势操作进行分析并直到识别失败的过程中，A 的状态一直会处于某个可能初始状态， 除非B到达了分析识别“失败”的状态，A才开始分析并开始转向下一个状态。另一方面，如果 B 识别成功或者识别(成功)开始，A 就会被转向失败状态。</p>
+<h4 id="2-2-禁止手势识别器进行触摸分析"><a href="#2-2-禁止手势识别器进行触摸分析" class="headerlink" title="2.2 禁止手势识别器进行触摸分析"></a>2.2 禁止手势识别器进行触摸分析</h4><p>通过给识别器添加代理对象，开发者可以修改识别器的行为。协议 UIGestureRecognizerDelegate 提供了几个方法给开发者用来禁止手势识别器的触摸分析功 能。<code>gestureRecognizer:shoulReceiveTouch:</code>和 <code>gestureRecognizerShouldBegin:</code>两个方法都可选用。</p>
+<p>当用户“触摸”操作开始时，开发者可以使用 <code>gestureRecognizer:shoulReceiveTouch:</code>方法立即决定手势识别器是否需要处理用户的操作。每当“触摸”发生，该方法就会被调用。 如果不想对用户的触摸操作进行处理直接将该方法返回“NO”即可，默认情况下返回的 是“YES”。该方法并不会修改识别器的状态值。</p>
+<h4 id="2-3-允许手势识别同时异步进行"><a href="#2-3-允许手势识别同时异步进行" class="headerlink" title="2.3 允许手势识别同时异步进行"></a>2.3 允许手势识别同时异步进行</h4><p>默认情况下，两个不同的手势识别器是不允许同时对手势进行识别处理的，但是假如开发者想要让用户在对某个视图同时进行捏合缩放和旋转操作，开发者就需要改变此默认设 定，通过实现方法 <code>gestureRecognizer:shouldRecognizeSimutaneouslyWithGestureRecognizer:</code> 可以达到此目的，这是由协议 UIGestureRecognizerDelegate 提供的一个可选方法。该方法会在某个识别器进行手势事件识别处理时被调用，从而决定是否需要􏰀定事件不让其他识 别器进行识别处理。默认情况下，该方法返回“NO”，如果开发者想要两个不同的手势 识别器同时对手势进行识别处理，让该方法返回“YES”即可。</p>
+<blockquote>
+<p>备注:开发者只需要对其中一个手势的代理对象实现该方法并返回YES即可。这就意味着，两 个手势识别器中只要有一个返回YES，另外一个返回NO就不起作用了。</p>
+</blockquote>
+<h4 id="2-4-指定两个手势识别器的单向关系"><a href="#2-4-指定两个手势识别器的单向关系" class="headerlink" title="2.4 指定两个手势识别器的单向关系"></a>2.4 指定两个手势识别器的单向关系</h4><p>如果开发者想让两个识别器进行交互，但是指定为一种单向关系，开发者就可以通过重写方法 <code>canPreventGestureRecognizer:</code>或者 <code>canBePreventedByGestureRecognizer:</code>之一并返回</p>
+<p>“NO”(默认返回的是“YES”)来达到此目的。举个例子，如果想要在进行旋转操作的</p>
+<p>时候屏蔽掉捏合缩放操作、而在捏合缩放操作的时候可以进行旋转，开发者就可以这样设</p>
+<p>置 <code>[rotationGestureRecognizer canPreventGestureRecognizer:pinchGestureRecognizer]</code></p>
+<p>然后重写“旋转”手势识别器的子类方法并返回“NO”。关于如何创建继承 UIGestureRecognizer 子类的信息请参阅“创建自定义手势识别器”章节。</p>
+<p>如果这两个手势识别器需要同时进行不相互干预，请参阅章节 2.3.默认情况下，这两个不同的手势识别器是不能同时进行手势识别操作的，也就是互相屏蔽的，其中任何一个处于活动状态，另外一个都是被屏蔽的。</p>
+<h2 id="与其他用户界面操作进行交互"><a href="#与其他用户界面操作进行交互" class="headerlink" title="与其他用户界面操作进行交互"></a>与其他用户界面操作进行交互</h2><p>在 iOS6 以及之后的版本中，默认情况下，所有的控制器都不允许手势识别器重复交叠。 比如，按钮(button)的默认操作行为是“单击”，然后，有一个“按钮”所在的视图 (view)绑定了一个“单击”手势识别器对手势进行处理，当用户“单击”这个按钮的时候，按钮指定的动作处理方法会接收到这个“单击”事件，然而视图的手势识别器却接收不到。</p>
+<p>这种策略仅应用于: <em>UIButton</em>，<em>UISwitch</em>，<em>UISlider</em>，<em>UIStepper</em>，<em>UISegementedControl</em> 和 <em>UIPageControl</em> 上的单击或者滑动事件。</p>
+<p>如果自定义控件继承自以上的类，又想要改变系统的默认设定，那就应该直接将手势识别器和其子类控件进行绑定，而不是和控件的父视图或者其他上层控件进行绑定。只有这样，手识别器才会优先接收到用户的触摸操作事件。</p>
+<h2 id="手势识别器处理原生触摸事件"><a href="#手势识别器处理原生触摸事件" class="headerlink" title="手势识别器处理原生触摸事件"></a>手势识别器处理原生触摸事件</h2><h3 id="1-点击事件的数据结构"><a href="#1-点击事件的数据结构" class="headerlink" title="1 点击事件的数据结构"></a>1 点击事件的数据结构</h3><p>在 iOS 中，每一个“触摸(touch)”行为对象就代表单根手指在屏幕上的一次运动操作。一个“手势(gesture)”可以有一个或者多个“触摸”行为对象，在 iOS 中以 UITouch 类对象进行抽象表示。例如，一个捏合缩小手势就有两个“触摸”行为对象：两根手指在屏幕上以相反运动方向相互靠拢运动。</p>
+<p>一个事件(Event)包含了这次多点触摸行为序列的所有“触摸”对象。一个多点触摸行为序列开始于用户第一根手指触摸到屏幕、终止于用户的最后一根手指抬起并离开屏幕。 当一根手指进行运动时，iOS 系统就会实例化 UITouch 对象并发送给对应的事件对象。一个多点触摸事件会被抽象成一个类型为 UIEventTypeTouches 的 UIEvent 对象。</p>
+<p>每一个“触摸”对象都只追踪一根手指的轨迹，其生命周期也仅限于整个触摸序列的起止期间。在此这段时间内，UIKit 跟踪手指的轨迹并及时更行其对象的属性。这些属性包括触摸的行为的方式、在当前视图对象中的位置、之前的位置以及时间戳。</p>
+<h3 id="2-App在”触摸处理“方法中接受”触摸“对象"><a href="#2-App在”触摸处理“方法中接受”触摸“对象" class="headerlink" title="2 App在”触摸处理“方法中接受”触摸“对象"></a>2 App在”触摸处理“方法中接受”触摸“对象</h3><p>在一次多点触摸序列事件中，当有新的触摸行为或者触摸行为发生变化时，app 会发送以下消息：</p>
+<ul>
+<li><em>touchesBegan:withEvent:</em> 当一个或者多根手指开始触摸屏幕时调用。</li>
+<li><em>touchesMoved:withEvent:</em> 当手指开始移动时调用。</li>
+<li><em>touchesEnded:withEvent:</em> 当有手指离开屏幕时调用。</li>
+<li><em>touchedCancelled:withEvent:</em> 当触摸序列事件被系统事件取消时调用，比如来了电话。</li>
+</ul>
+<p>以上每一个方法都对应着一个“触摸阶段”，比如第一个方法会和 UITouchPhaseBegan 相对应。它的值存储在 UITouch 的 phase 属性中。</p>
+<h2 id="调整触摸事件路由"><a href="#调整触摸事件路由" class="headerlink" title="调整触摸事件路由"></a>调整触摸事件路由</h2><h3 id="1-默认行为"><a href="#1-默认行为" class="headerlink" title="1 默认行为"></a>1 默认行为</h3><p>默认情况下，事件会优先发送给手势识别器进行识别，当手势识别器识别失败后才会发送给同层级的视图。如果识别成功，同层级的视图不会受到触摸事件。</p>
+<p>当触摸事件发生时，UITouches 触摸对象会先由 UIApplication 对象传递给 UIWindow 对象，然后，在传递给最底层的视图对象之前，UIWindow 对象会逐层向下， 将“触摸”对象传递给触摸事件发生位置所在的视图对象所绑定的手势识别器进行识别处理。</p>
+<p>window 对象会延迟将“触摸”对象发送给视图对象，从而让手势识别器最先对“触摸” 进行分析处理。在延迟期间，如果识别器识别出来触摸手势，window 对象就不会将“触摸对象”传递给视图对象了，并将识别出来的手势序列中其他之前本该发送给视图对象的触摸对象取消掉。</p>
+<p><img src="/images/event_chain/gestureandview.png" alt="gestureandview" style="zoom:50%;" /></p>
+<h3 id="2-修改默认行为"><a href="#2-修改默认行为" class="headerlink" title="2 修改默认行为"></a>2 修改默认行为</h3><p>UIGestureRecognizer 的下面这些属性可以调整事件传递的顺序：</p>
+<ul>
+<li><p>delaysTouchesBegan(默认值是 NO)。通常情况下，window 会在 Began 和 Moved 阶 段将触摸事件发送给 view 和手势识别器对象。如果将此属性值设置成 YES，window 就不会在 Began 阶段将“触摸”(UITouch)对象发送给视图对象，这样可以保证当手势识别器识别到某个手势时，就不有任何相关的 UITouch 对象被发送给 绑定的视图。</p>
+<p>该属性值的设置类似于 UIScrollView 的 delaysContentTouches 属性;在这种情况 下，UIScrollView 就立即随着用户“触摸”动作的进行滚动，而不会将“触摸” (UITouch)对象发送给 SrollView 的子视图对象，所以也就不会有视觉上的反馈效果。</p>
+</li>
+</ul>
+<ul>
+<li>delaysTouchesEnded(默认值为 YES)。当该属性被设置成 YES 时，可以保证视图对象的动作处理不会结束，这样一来该手势动作还有机会被取消。当手势识别器对触摸事件进行分析时，在 End 阶段window 不会将 UITouch 对象发送给发绑定的视图。如果识别器成功识别出来手势操作，UITouch 对象会被取消掉;若是识别 失败，window 对象就会将它们通过消息 touchesEnded:wihtEvent:发送给视图对象。如果将该属性值设置成 NO，就会把这些“触摸”(UITouch)对象发送给手势识别器的同时，也发送给视图对象进行分析处理。</li>
+</ul>
+<h2 id="自定义手势"><a href="#自定义手势" class="headerlink" title="自定义手势"></a>自定义手势</h2><p>自定义手势需要实现下列方法，在实现方法时，注意需要先调用父类方法。另外还需要精确设置state属性，系统是严格根据state属性来进行手势状态识别的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)reset;</span><br><span class="line">- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event;</span><br></pre></td></tr></table></figure>
+<h4 id="1-自定义手势的事件处理方法"><a href="#1-自定义手势的事件处理方法" class="headerlink" title="1 自定义手势的事件处理方法"></a>1 自定义手势的事件处理方法</h4><p>创建了一个非持续手势单指触摸的对勾手势识别器。通过记录手势操作的中心点、亦即向上勾动的转折位置点，所以就可以让外部捕获该坐标点的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit&#x2F;UIGestureRecognizerSubclass.h&gt;</span><br><span class="line"> &#x2F;&#x2F; Implemented in your custom subclass</span><br><span class="line"> - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    [super touchesBegan:touches withEvent:event]; </span><br><span class="line">    if ([touches count] !&#x3D; 1) &#123;</span><br><span class="line">        self.state &#x3D; UIGestureRecognizerStateFailed; </span><br><span class="line">        return;</span><br><span class="line">    &#125; </span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event &#123; </span><br><span class="line">    [super touchesMoved:touches withEvent:event];</span><br><span class="line">    if (self.state &#x3D;&#x3D; UIGestureRecognizerStateFailed) return; </span><br><span class="line">    UIWindow *win &#x3D; [self.view window];</span><br><span class="line"></span><br><span class="line">    CGPoint nowPoint &#x3D; [touches.anyObject locationInView:win]; </span><br><span class="line">    CGPoint nowPoint &#x3D; [touches.anyObject locationInView:self.view]; </span><br><span class="line">    CGPoint prevPoint &#x3D; [touches.anyObject previousLocationInView:self.view];</span><br><span class="line">    &#x2F;&#x2F; strokeUp is a property</span><br><span class="line">    if (!self.strokeUp) &#123;</span><br><span class="line">        &#x2F;&#x2F; On downstroke, both x and y increase in positive direction</span><br><span class="line">        if (nowPoint.x &gt;&#x3D; prevPoint.x &amp;&amp; nowPoint.y &gt;&#x3D; prevPoint.y) &#123;</span><br><span class="line">            self.midPoint &#x3D; nowPoint;</span><br><span class="line">            &#x2F;&#x2F; Upstroke has increasing x value but decreasing y value</span><br><span class="line">        &#125; </span><br><span class="line">        else if (nowPoint.x &gt;&#x3D; prevPoint.x &amp;&amp; nowPoint.y &lt;&#x3D; prevPoint.y) &#123;</span><br><span class="line">            self.strokeUp &#x3D; YES; &#125; </span><br><span class="line">        else &#123;</span><br><span class="line">            self.state &#x3D; UIGestureRecognizerStateFailed; &#125;</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    [super touchesEnded:touches withEvent:event];</span><br><span class="line">    if ((self.state &#x3D;&#x3D; UIGestureRecognizerStatePossible) &amp;&amp; self.strokeUp) &#123;</span><br><span class="line">        self.state &#x3D; UIGestureRecognizerStateRecognized; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    [super touchesCancelled:touches withEvent:event]; </span><br><span class="line">    self.midPoint &#x3D; CGPointZero;</span><br><span class="line">    self.strokeUp &#x3D; NO;</span><br><span class="line">    self.state &#x3D; UIGestureRecognizerStateFailed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>连续动作手势的识别和非持续动作手势的识，识别器的状态值的转变是不一样的，在章节 “有限状态机中手势识别的操作”中有介绍。自定义手势识别器时，通过给其状态state 属性赋予相应的值，来指定手势识别对应的连续的还是非持续的手势。对勾手势作为一个非持续手势，就不要给其状态赋予Began或者Changed状态值了。</p>
+<p>所以，在进行创建手势识别器的子类进行自定义手势识别时，最重要的一点就是准确为其状态属性state赋予准确的值。iOS系统需根据此状态属性，确保手势识别器能够按照预期对手势进行识别。</p>
+<p>欲知更多如何自定义手势识别器知识，请观看《WWDC 2012: Building Advanced Gesture Recognizers 》。</p>
+<h4 id="2-重置手势识别器的状态"><a href="#2-重置手势识别器的状态" class="headerlink" title="2 重置手势识别器的状态"></a>2 重置手势识别器的状态</h4><p>如果手势识别器的状态值转为 Recognized(识别成功)/Ended(结束识别)，Canceled (取消)，UIGestureRecognizer 在其状态回滚到 Possible 初始状态前，会调用 reset 方法。</p>
+<p>通过实现 reset 方法，将所有的内部状态重置，以便手势识别器可以用于识别用户下一次手势操作，一旦手势识别器从该方法返回之后，就不再对后续的触摸操作进一步更新处理了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)reset &#123; </span><br><span class="line">    super reset];</span><br><span class="line">    self.midPoint &#x3D; CGPointZero;</span><br><span class="line">    self.strokeUp &#x3D; NO; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="事件响应链"><a href="#事件响应链" class="headerlink" title="事件响应链"></a>事件响应链</h2><p>事件需要投递给负责处理该事件的对象，按优先级从高到低的顺序投递，如此形成的链式责任链就是事件响应链。</p>
+<p>单例对象 UIApplication 从事件队列取出事件后，会被转发给 app 的window对象，然后由此 window 对象将事件传递给事件发生所在的对象进行处理，这个初始对象是什么，取决于事件的类型:</p>
+<ul>
+<li>Touch Event(触摸事件)。对于触摸事件，window对象首先尝试将事件传递给事件发生所在的 view 。该view 就是所谓的 hit-test 对象。寻找 hit-test 对象的过程被称作 hit-testing。</li>
+<li>Motion and remote control events(运动和远程控制事件)。对于远程控制和运动事件，window对象会将事件发送给第一响应者(the first responder)进行处理。</li>
+</ul>
+<h4 id="1-Hit-Testing-过程"><a href="#1-Hit-Testing-过程" class="headerlink" title="1 Hit-Testing 过程"></a>1 Hit-Testing 过程</h4><p>用户在使用手机时，会觉得滑动一个 TableView 然后内容随之滚动是理所应当的事情。但是把视角切换到屏幕和视图树两者时，就会发现两者完全是两个系统。用户本质上是做了在屏幕上移动手指的动作，这和屏幕上显示什么东西没有任何关系。</p>
+<p>屏幕上的虚拟对象能响应用户的操作，这中间有着巨大的工作量，其中Hit-Testing 过程是非常重要的一环。经过这个过程以后，系统能把用户在一块玻璃上点击的位置转换成该位置上显示的虚拟对象。</p>
+<p>Hit-Testing过程大致如下： 先检查点击的位置是否落在了对应的视图对象的范围内。如果在的话，就开始对此视图对象的子视图对象进行同样的检查。视图树中最底层那个包含此触摸点位置的视图对象，就是要查找的 hit-test 视图对象。一旦确定 hit-test 视图对象，系统就会把触摸事件传递给它进行处理。</p>
+<p>举个例子，假设用户触摸了视图 E，如图所示。iOS 就会按照以下顺序对子视图进行 检查来查找 hit-test 视图:</p>
+<p><img src="view_inheritance.png" alt="view_inheritance" style="zoom:50%;" /></p>
+<ol>
+<li>触摸点在视图 A 的区域范围内，然后开始检查子视图 B 和 C</li>
+<li>触摸点不在 B 的范围而在 C 的范围，于是就开始检查 D 和 E 视图</li>
+<li>触摸点不在 D 的范围而在 E 的范围，而 E 视图是视图树最底层的并包含触摸点的视图对象，所以 E 就成为了 hit-test 视图</li>
+</ol>
+<p>整个Hit-Testing 过程可以用下面的伪代码来描述：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="built_in">UIView</span> *)hitTest:(<span class="built_in">CGPoint</span>)point withEvent:(<span class="built_in">UIEvent</span> *)event &#123;</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span> pointInside:point withEvent:event]) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">UIView</span> *subview <span class="keyword">in</span> <span class="keyword">self</span>.subviews) &#123;</span><br><span class="line">            <span class="built_in">CGPoint</span> pointOnsubview = [<span class="keyword">self</span> convertPoint:point toView:subview];</span><br><span class="line">            <span class="built_in">UIView</span> *subone = [subview hitTest:pointOnsubview withEvent:event];</span><br><span class="line">            <span class="keyword">if</span> (subone) &#123;</span><br><span class="line">                <span class="keyword">return</span> subone;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>hitTest:withEvent</code> 方法根据 CGPoint 和 UIEvent 参数查找 hit-test 视图对象。 它会先调用 <code>pointInside:withEvent:</code>方法。如果传入 <code>hitTest:withEvent:</code>的 CGPoint 点对象位于视图对象的区域范围内，<code>pointInside:withEvent:</code>返回值就是 YES，然后就会递归式地在返回 YES 的子视图对象上调用 <code>hitTest:withEvent:</code>，直到找到底层的视图。</p>
+<p>如果传入 <code>hitTest:withEvent:</code>的点不在视图对象的范围内，第一次调用 <code>pointInside:withEvent:</code>就会返回 NO，这个点就被忽略掉了，<code>hitTest:withEvent:</code>就返回 nil。 如果子视图返回 NO，那么整个视图树的分支都会被忽略掉。所以如果父视图不包含某个触摸事件的点，子视图即使包含了这个点，也不会接收到此触摸事件。因为在父视图进行pointInside检查时就中断了事件的投递。</p>
+<p>所以如果想要实现子视图超出父视图还能相应事件，需要改写父视图默认的hitTest:withEvent方法。</p>
+<blockquote>
+<p>触摸对象UITouch 在其生命周期内会和hit-test 视图对象一直关联在一起，即使UITouch在后续的时间里移动并离开该视图对象的范围也是一样的。</p>
+</blockquote>
+<p>hit-test 视图对象拥有最先对触摸事件进行处理的机会，如果 hit-test 视图对象无法处理该事件，事件对象就会沿着响应者的视图链向上传递，直到找到最适合处理该事件的对象或者到最顶层的window为止。</p>
+<h4 id="2-响应者组成的响应链"><a href="#2-响应者组成的响应链" class="headerlink" title="2 响应者组成的响应链"></a>2 响应者组成的响应链</h4><p>许多事件都依赖于响应者链(responder chain)进行事件传递。响应者链就是一系列的相关联的响应者。如果第一个响应者无法处理事件，响应者就会将事件传递给下一个响应者。</p>
+<p>UIResponder 类是所有响应者的基类，不仅定义了事件处理的编程接口，同时还定义了通用的响应者行为。UIApplication、UIViewController、UIView 类的实体对象都是响应者。</p>
+<p>第一响应者第一个接收事件。通常来讲，第一响应者是一个视图 view 对象。通过做两件事，一个对象就变成了第一响应者:</p>
+<ol>
+<li>重写 canBecomeFirstResponder 并返回 YES;</li>
+<li>接收 becomeFirstResponder 消息。如果有必要，对象本身可以自己发送此消息。</li>
+</ol>
+<blockquote>
+<p>将某个对象变成第一响应者之前，一定要确保APP已经建立好了视图树。如通常应该在重写的 viewDidAppear:方法中调用becomeFirstResponder 方法，但是如果写在了 viewWillAppear 里面，此时因为视图树还没有建立起来，becomeFirstResponder 的返回值就 NO 了。</p>
+</blockquote>
+<p>也不仅仅只是事件对象依赖于响应者链，响应者链可以被用于处理以下所有对象:</p>
+<ul>
+<li><strong>Touch Events</strong>(触摸事件)。如果 hit-test 视图对象无法处理触摸事件，事件就会从hit-test 视图沿着响应链往上传递，直到找到合适的处理该事件的对象。</li>
+<li><strong>Motion Events</strong>(运动事件)。要使用 UIKit 处理“摇动”(shake-motion)事件， 第一响应者就必须实现方法 motionBegan:withEvent:或者 motionEnded:withEvent:之一。</li>
+<li><p><strong>Remote Control Events</strong>(远程控制事件)。要对远程控制事件进行处理，第一响应者必须实现基类 UIResponder 的 remoteControlReceivedWithEvent:方法。</p>
+</li>
+<li><p><strong>Action messages</strong>(动作消息)。当用户操作了某个控件，如按钮 button、switch， 对应的动作方法的目标是 nil，该消息会从以控件视图对象为开始的响应者链被发送出去。</p>
+</li>
+<li><p><strong>Editing-menu messages</strong>(编辑菜单消息)。当用户点击了编辑菜单的指令，iOS 系统就会使用响应者链去查找到对应实现了必要处理方法(如 cut:,copy:以及 paste:) 的对象。</p>
+</li>
+<li><p><strong>Text Editing</strong>(文本编辑)。当用户点击某个文本区域(UITextField)或者文本视图 (UITextView)时，对应的视图就会成为第一响应者。默认情况下，虚拟键盘会弹 出来，而且对应的 UITextField 或者 UITextView 就会被选中并变成正在编辑状态。</p>
+<p>当用户点击某个 UITextField 或者 UITextView 的时候，UIKit 会自动把将对应的对象设置为第一响应者。对于其他类型，App 必须使用 becomeFirstResponder 方法显示地进行设置。</p>
+</li>
+</ul>
+<h4 id="3-响应链的传递路径"><a href="#3-响应链的传递路径" class="headerlink" title="3 响应链的传递路径"></a>3 响应链的传递路径</h4><p>如果初始对象(要么是 hit-test 视图，要么是第一响应者)无法对事件进行处理，UIKit 就会把事件传递给响应者链的下一个响应者。每个响应者都可以决定是自己进行事件处理，还是将事件通过方法 nextResponder 的调用，传递给下一个事件响应者。此过程一直进行下去，直到找到了处理该事件的对象，或者到达了响应者链的最后一个响应者。</p>
+<p>响应者链开始于 iOS 检测到事件并将其传递到(事件发生所在的)初始对象，通常来讲这个对象是一个视图对象 view。初始视图对象会最先有机会对事件进行处理。如图所示，就是两个不同的 app 中事件的不同的两条事件传递路径。App 的事件传递路径由其特 定的结构所决定，但所有的事件传递路径都遵循同样的逻辑方法。</p>
+<p>左边 APP 的事件传递路径如下:</p>
+<ol>
+<li>初始视图对象尝试对事件进行处理，如果无法处理，就会将事件传递给其父视图对 象，因为视图树中，初始视图对象也并不是最顶端的对象。</li>
+<li>父视图也进行同样的尝试，因为同样的原因也只能将事件继续向上传递。</li>
+<li>视图控制器中最顶层的视图也进行同样的尝试，结果发现也处理不了，于是就传递了视图控制器。</li>
+<li>视图控制器也一样无法处理，于是继续向上传递给了主窗体对象(window)。</li>
+<li><p>主窗体也无法处理，于是就继续传递给 app 的单例实体对象。 6. 如果最后单例实体对象还无法处理，此事件就被丢弃了。</p>
+</li>
+<li><p><img src="/images/event_chain/event_route.png" alt="event_route" style="zoom:50%;" /></p>
+</li>
+</ol>
+<p>虽然右边的 APP 传递路径略微不一样，但是事件传递遵循的逻辑方法还是一样的:</p>
+<ol>
+<li>视图将事件沿着其视图控制器的视图树向上传递，直到最顶端的视图。</li>
+<li>顶端是图无法处理，就直接传递给视图控制器。</li>
+<li>视图控制器无法处理，就会将事件传递给其顶端视图所在的父视图。重复 1-3，直到到达最顶端的根视图控制器(root view controller)。</li>
+<li>跟视图控制器将事件传递给主窗体对象。</li>
+<li>主窗体对象传递给 app 的单例实体对象。</li>
+</ol>
+<blockquote>
+<p>自定义视图来处理响应链时，不要直接将事件或者消息直接发送给 nextResponder，而是调用父类的事件处理方法，来达到将事件沿着响应器链向上传递的目的，让 UIKit 框架来完成响应器链的事件消息传递。</p>
+</blockquote>
+<h2 id="View的事件交互模型"><a href="#View的事件交互模型" class="headerlink" title="View的事件交互模型"></a>View的事件交互模型</h2><p>无论是用户主动触发还是程序主动改变，从事件产生到界面发生变化，系统会周期性地执行一系列程序来达成这一目的。这一系列的程序大致分成如图所示的几个部分：</p>
+<p><img src="/images/event_chain/app_event_structure.png" alt="app_event_structure" style="zoom:70%;" /></p>
+<p>下面分步骤进一步解释了图中的事件序列，并说明了每个阶段发生的情况以及希望应用程序作出响应的方式。</p>
+<ol>
+<li><p>用户触摸屏幕。</p>
+</li>
+<li><p>硬件将触摸事件报告给UIKit框架。</p>
+</li>
+<li><p>UIKit框架将触摸打包到<code>UIEvent</code>对象中并将其分派到适当的视图。</p>
+</li>
+<li><p>视图的事件处理代码会响应事件。例如：</p>
+<ul>
+<li>更改视图或其子视图的属性（frame, bounds, alpha等）。</li>
+<li>调用<code>setNeedsLayout</code>方法将视图（或其子视图）标记为需要布局更新。</li>
+<li>调用<code>setNeedsDisplay</code>或<code>setNeedsDisplayInRect:</code>方法将视图（或其子视图）标记为需要重绘。</li>
+<li>通知控制器有关某些数据的更改。</li>
+</ul>
+<p>当然，由您来决定视图应该做哪些事情以及应该调用哪些方法。</p>
+</li>
+<li><p>如果视图的大小被修改，UIKit将根据以下规则更新其子视图：</p>
+<ol>
+<li>如果设置了autoresizing属性，UIKit会根据这些规则调整每个视图。</li>
+<li>调用<code>layoutSubviews</code>方法，更新子视图。</li>
+</ol>
+</li>
+<li><p>如果任何视图的任何部分被标记为需要重绘，UIKit会要求视图重绘。对于实现了<code>drawRect:</code>方法的自定义视图，UIKit会调用该方法，进行重绘。</p>
+</li>
+<li><p>任何更新的视图都与应用程序的其他可见内容合成，并发送到图形硬件进行显示。</p>
+</li>
+<li><p>图形硬件将渲染的内容传输到屏幕。</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/07/core_animation_basic/" rel="next" title="Core Animation Basic">
+                <i class="fa fa-chevron-left"></i> Core Animation Basic
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/07/advanced_graphics_and_animation_performance/" rel="prev" title="iOS界面渲染机制">
+                iOS界面渲染机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ney" />
+          <p class="site-author-name" itemprop="name">Ney</p>
+           
+              <p class="site-description motion-element" itemprop="description">Learning，sharing，improving</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义手势识别如何交互"><span class="nav-number">1.</span> <span class="nav-text">定义手势识别如何交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-有限状态机中手势识别的操作"><span class="nav-number">1.1.</span> <span class="nav-text">1 有限状态机中手势识别的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-与其他手势识别器进行交互"><span class="nav-number">1.2.</span> <span class="nav-text">2 与其他手势识别器进行交互</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-申明两个识别器的特定顺序"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 申明两个识别器的特定顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-禁止手势识别器进行触摸分析"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 禁止手势识别器进行触摸分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-允许手势识别同时异步进行"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 允许手势识别同时异步进行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-指定两个手势识别器的单向关系"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 指定两个手势识别器的单向关系</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与其他用户界面操作进行交互"><span class="nav-number">2.</span> <span class="nav-text">与其他用户界面操作进行交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手势识别器处理原生触摸事件"><span class="nav-number">3.</span> <span class="nav-text">手势识别器处理原生触摸事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-点击事件的数据结构"><span class="nav-number">3.1.</span> <span class="nav-text">1 点击事件的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-App在”触摸处理“方法中接受”触摸“对象"><span class="nav-number">3.2.</span> <span class="nav-text">2 App在”触摸处理“方法中接受”触摸“对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调整触摸事件路由"><span class="nav-number">4.</span> <span class="nav-text">调整触摸事件路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-默认行为"><span class="nav-number">4.1.</span> <span class="nav-text">1 默认行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-修改默认行为"><span class="nav-number">4.2.</span> <span class="nav-text">2 修改默认行为</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义手势"><span class="nav-number">5.</span> <span class="nav-text">自定义手势</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-自定义手势的事件处理方法"><span class="nav-number">5.0.1.</span> <span class="nav-text">1 自定义手势的事件处理方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-重置手势识别器的状态"><span class="nav-number">5.0.2.</span> <span class="nav-text">2 重置手势识别器的状态</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件响应链"><span class="nav-number">6.</span> <span class="nav-text">事件响应链</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Hit-Testing-过程"><span class="nav-number">6.0.1.</span> <span class="nav-text">1 Hit-Testing 过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-响应者组成的响应链"><span class="nav-number">6.0.2.</span> <span class="nav-text">2 响应者组成的响应链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-响应链的传递路径"><span class="nav-number">6.0.3.</span> <span class="nav-text">3 响应链的传递路径</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View的事件交互模型"><span class="nav-number">7.</span> <span class="nav-text">View的事件交互模型</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ney</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+    NexT.Gemini
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
